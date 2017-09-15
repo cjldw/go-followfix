@@ -12,6 +12,6 @@ func ThrowErr(err error) {
 
 func CheckErr(err error)  {
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("catch exception %v", err.Error())
 	}
 }

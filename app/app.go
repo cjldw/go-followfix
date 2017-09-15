@@ -10,11 +10,11 @@ type App struct {
 }
 
 var app *App
-var once *sync.Once = sync.Once{}
+var appOnce *sync.Once = &sync.Once{}
 
 func GetApp() *App  {
 	if app == nil {
-		return NewApp()
+		app = NewApp()
 	}
 	return app
 }
@@ -23,20 +23,20 @@ func NewApp() *App  {
 	if app != nil && app.isInitialize {
 		return app
 	}
-	once.Do(func() {
+	appOnce.Do(func() {
 		app = &App{}
-		app.confmgr = (func() {
+		app.confmgr = (func() *AppConf{
 			appconf, err := NewAppConf().Load(APP_CONFIG_PATH, false)
 			CheckErr(err)
 			return appconf
 		})()
-		app.dbmgr = (func() {
+		app.dbmgr = (func() *DbMgr{
 			dbmgr := NewDbMgr()
 			dbmgr.InitializeDbList(app.confmgr.DbConf)
 			return dbmgr
 
 		})()
-		app.redismgr = (func() {
+		app.redismgr = (func() *RedisMgr{
 			redismgr := NewRedisMgr()
 			redismgr.InitializeRedisList(app.confmgr.RedisConf)
 			return redismgr
