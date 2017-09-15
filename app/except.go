@@ -1,6 +1,8 @@
-package go_followfix
+package app
 
-import "github.com/cihub/seelog"
+import (
+	"log"
+)
 
 func ThrowErr(err error) {
 	if err != nil {
@@ -10,6 +12,6 @@ func ThrowErr(err error) {
 
 func CheckErr(err error)  {
 	if err != nil {
-		seelog.Error(err)
+		log.Fatal(err)
 	}
 }

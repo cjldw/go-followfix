@@ -1,5 +1,4 @@
-package go_followfix
-
+package app
 import (
 	"testing"
 	"os"

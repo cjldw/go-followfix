@@ -1,5 +1,4 @@
-package go_followfix
-
+package app
 import (
 	"path/filepath"
 	"strings"
@@ -17,10 +16,8 @@ type AppConf struct {
 
 // database instance configure
 type DbInst struct {
-	Host string
-	Username string
-	Password string
-	Port int
+	Driver string
+	Dsn string
 }
 
 // redis instance configure
@@ -56,8 +53,6 @@ func (appConf *AppConf) Load(filename string, forceReload bool)  (*AppConf, erro
 	// mark appConf as loaded
 	isLoad = true
 	return appConf, nil
-
-
 }
 
 // getEnvConfigPath  get file name by environment

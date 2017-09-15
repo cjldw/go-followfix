@@ -2,11 +2,8 @@ name = "follow_data_fix"
 version = "1.0"
 [dbConf]
 [dbConf.users_data]
- host = "10.62.62.114"
- username = "app_zhanqi"
- password = "123456"
- database = "users_data"
- port = 8066
+driver = "mysql"
+dsn = "root:111111@tcp(127.0.0.1:3306)/luowen?charset=utf8"
 
 [redisConf]
 [redisConf.social]
