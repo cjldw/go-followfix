@@ -1,0 +1,12 @@
+<seelog type="asynctimer" asyncinterval="5000000" minlevel="debug" maxlevel="error">
+    <outputs formatid="main">
+        <console/>
+        <splitter formatid="format1">
+            <file path="log.log"/>
+        </splitter>
+    </outputs>
+    <formats>
+        <format id="main" format="%Date(2006 Jan 02/3:04:05.000000000 PM MST) [%Level] %Msg%n"/>
+        <format id="format1" format="%Date/%Time [%LEV] %Msg%n"/>
+    </formats>
+</seelog>
