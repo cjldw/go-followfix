@@ -10,3 +10,5 @@ const DB_USERS_DATA  = "users_data"
 const REDIS_SOCIAL  =  "social"
 
 const USER_FOLLOW_TABLE_PREFIX  = "user_follow_"
+
+const USER_FOLLOW_SPLIT_TABLE_NUM  =  10

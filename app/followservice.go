@@ -30,7 +30,7 @@ var followOnce *sync.Once = &sync.Once{}
 func NewFollowService() *FollowService {
 	if followService == nil {
 		followOnce.Do(func() {
-			followService = &FollowService{set.New(), set.New(), &sync.RWMutex{}, make(chan PeerUID), make(chan bool)}
+			followService = &FollowService{set.New(), set.New(), &sync.RWMutex{}, make(chan PeerUID, 100), make(chan bool)}
 		})
 	}
 	return followService
@@ -38,11 +38,11 @@ func NewFollowService() *FollowService {
 
 func (followService *FollowService) Produce()  {
 	wg := &sync.WaitGroup{}
-	for table := 0; table < 10 ; table++  {
+	for table := 0; table < USER_FOLLOW_SPLIT_TABLE_NUM ; table++  {
 		tablename := USER_FOLLOW_TABLE_PREFIX + strconv.Itoa(table)
+		wg.Add(1)
 		go (func(wg *sync.WaitGroup, followService *FollowService, tablename string) {
 			log.Println(fmt.Sprintf("Process table 【%s】start", tablename))
-			wg.Add(1)
 			followService.processSplitTable(tablename)
 			log.Println(fmt.Sprintf("Process table 【%s】end", tablename))
 			wg.Done()
@@ -54,10 +54,12 @@ func (followService *FollowService) Produce()  {
 
 func (followService *FollowService) Consumer()  {
 	wg := &sync.WaitGroup{}
+	log.Println("consumer start")
+	produceEnd := false
 	for  {
 		select {
-		case <- followService.ProduceEnd:
-			break
+		case flag := <- followService.ProduceEnd:
+			produceEnd = flag
 		case peerUID := <- followService.Traffic:
 			wg.Add(1)
 			go (func(wg *sync.WaitGroup, peerUID PeerUID) {
@@ -65,14 +67,42 @@ func (followService *FollowService) Consumer()  {
 				wg.Done()
 			})(wg, peerUID)
 		}
+		if produceEnd {
+			break
+		}
 	}
 	wg.Wait()
+	log.Println("consumer end")
 }
 
 // WriteDbRedis 将单个UID用户写入到Reids中, 更新数据库
 func (followService *FollowService) WriteDbRedis( peerUID PeerUID)  {
+	uid := peerUID.UID
+	fansCnt := peerUID.FansCnt.Size()
 
+	dbUsersData, err := GetApp().dbmgr.GetDbByName(DB_USERS_DATA)
+	CheckErr(err)
+	tableName := USER_FOLLOW_TABLE_PREFIX + strconv.Itoa(uid % USER_FOLLOW_SPLIT_TABLE_NUM)
+	fansCntSql := fmt.Sprintf("update %s set fansCnt = %d where uid = %d", tableName, fansCnt, uid)
+	log.Println(fansCntSql)
+	affected, err := dbUsersData.Db.Exec(fansCntSql)
+	CheckErr(err)
+	affectedRows, err := affected.RowsAffected()
+	CheckErr(err)
+	log.Println(fmt.Sprintf("UPDATE FANS OK  ROW 【%d】", affectedRows))
 
+	for index := 0; index < USER_FOLLOW_SPLIT_TABLE_NUM ; index++  { // can not execute multiple statement
+		anchorCntSql := fmt.Sprintf("update user_follow_%d set anchorFansCnt = %d where anchor = %d;", index, fansCnt, uid)
+		affected, err = dbUsersData.Db.Exec(anchorCntSql)
+		log.Println(anchorCntSql)
+		CheckErr(err)
+		affectedRows, err = affected.RowsAffected()
+		CheckErr(err)
+		log.Println(fmt.Sprintf("UPDATE ANCHOR OK ROW 【%d】", affectedRows))
+	}
+
+	//redisSocial, err := GetApp().redismgr.GetRedisByName(REDIS_SOCIAL)
+	//CheckErr(err)
 }
 
 // processSplitTable 处理分表数据
@@ -84,18 +114,20 @@ func (followService *FollowService)processSplitTable(tablename string)  {
 		uidList1 := followService.excludeUIDSet.List()
 		uidList2 := make([]string, len(uidList1))
 		for index := range uidList1 {
-			uidList2[index] = uidList1[index].(string)
+			uidList2[index] = strconv.Itoa(uidList1[index].(int))
 		}
-		sql = fmt.Sprintf("%s and uid not in (%s)", sql, strings.Join(uidList2, ","))
+		//sql = fmt.Sprintf("%s and uid not in (%s)", sql, strings.Join(uidList2, ","))
+		sql += fmt.Sprintf(" and uid not in (%s)", strings.Join(uidList2, ","))
 	}
 	if !followService.excludeAnchorIdSet.IsEmpty() { // exclude has process anchor
 		anchorIdList := followService.excludeAnchorIdSet.List()
 		anchorIdList2 := make([]string, len(anchorIdList))
 		for index := range anchorIdList {
-			anchorIdList2[index] = anchorIdList[index].(string)
+			anchorIdList2[index] = strconv.Itoa(anchorIdList[index].(int))
 		}
-		sql = fmt.Sprint("%s and anchor not in (%s)", sql, strings.Join(anchorIdList2, ","))
+		sql += fmt.Sprintf(" and anchor not in (%s)", strings.Join(anchorIdList2, ","))
 	}
+	log.Println(sql)
 	dbRows, err := dbUsersData.Db.Query(sql)
 	defer dbRows.Close()
 	CheckErr(err)
@@ -108,22 +140,25 @@ func (followService *FollowService)processSplitTable(tablename string)  {
 		uniqueUIDSet.Add(uid)
 		uniqueUIDSet.Add(anchor)
 	}
-
-	uidChan := make(chan int, 1000)
+	uidChan := make(chan int, 1000) // 10
 	for {
-		uid := uniqueUIDSet.Pop().(int)
-		if uid == 0 {
+		puid := uniqueUIDSet.Pop() // 14
+		if puid == nil {
 			break
 		}
-		go followService.CalculateUIDFollowFansCnt(uid, uidChan)
+		opuid := puid.(int)
+		uidChan <- opuid
+		go followService.CalculateUIDFollowFansCnt(opuid, uidChan)
 	}
-	<- uidChan
+	emptyChanCnt := cap(uidChan)
+	for i := 0; i < emptyChanCnt ; i++  {
+		uidChan <- i
+	}
 }
 
 // CalculateUIDFollowFansCnt 计算单个UID的粉丝数, 关注数, 存放到集合中
 func (followService *FollowService) CalculateUIDFollowFansCnt(uid int, uidChan chan int)  {
 	dbUsersData, err := GetApp().dbmgr.GetDbByName(DB_USERS_DATA)
-	defer dbUsersData.Db.Close()
 	CheckErr(err)
 
 	followCntSet := set.New()
@@ -132,8 +167,8 @@ func (followService *FollowService) CalculateUIDFollowFansCnt(uid int, uidChan c
 	var anchor int
 	for index := 0; index < 10 ; index++  {
 		tablename = USER_FOLLOW_TABLE_PREFIX + strconv.Itoa(index)
-
 		followSql = fmt.Sprintf("select anchor from %s where uid = %d and isFriends = 0", tablename, uid)
+		//log.Println(followSql)
 		followRows, err := dbUsersData.Db.Query(followSql)
 		defer followRows.Close()
 		CheckErr(err)
@@ -143,6 +178,7 @@ func (followService *FollowService) CalculateUIDFollowFansCnt(uid int, uidChan c
 		}
 
 		fansSql = fmt.Sprintf("select uid from %s where anchor = %d and isFriends = 0", tablename, uid)
+		//log.Println(fansSql)
 		fansRows, err := dbUsersData.Db.Query(fansSql)
 		defer fansRows.Close()
 		CheckErr(err)
@@ -153,9 +189,9 @@ func (followService *FollowService) CalculateUIDFollowFansCnt(uid int, uidChan c
 	}
 
 	peerUID := PeerUID{UID:uid, FollowCnt:followCntSet, FansCnt:fansCntSet}
-	followService.Lock.Lock()
+	followService.Lock.RLock()
 	defer followService.Lock.RUnlock()
 	followService.Traffic <- peerUID
-	uidChan <- 1
+	<- uidChan
 }
 

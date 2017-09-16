@@ -38,8 +38,6 @@ func (dbMgr *DbMgr) GetDbByName(dbKey string) (*DbMgr, error) {
 	if dbClient.Ping() != nil {
 		return nil, errors.New(fmt.Sprintf("db 【%s】 go away！", dbKey))
 	}
-	err := dbClient.Ping()
-	CheckErr(err)
 	dbMgr.Db = dbClient
 	return dbMgr, nil
 }
