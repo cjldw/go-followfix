@@ -19,6 +19,7 @@ func GetApp() *App  {
 	return app
 }
 
+// NewApp return singleton application instance
 func NewApp() *App  {
 	if app != nil && app.isInitialize {
 		return app
