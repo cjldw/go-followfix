@@ -3,6 +3,8 @@ package app
 import (
 	"testing"
 	"sync"
+	"github.com/go-redis/redis"
+	"errors"
 )
 
 func TestFollowService_Produce(t *testing.T) {
@@ -35,4 +37,26 @@ func TestChan(t *testing.T)  {
 	for i := 0; i < 7 ; i++  {
 		c <- 1
 	}
+}
+
+func TestHashGet(t *testing.T)  {
+	var a interface{} = 22
+	t.Log(a)
+	aa, ok := a.(int)
+	if !ok {
+		t.Fatal(errors.New("convert interface{} to int error !"))
+	}
+	t.Log(aa + 1)
+
+	redisClient := redis.NewClient(&redis.Options{
+		Addr: "127.0.0.1:6379",
+		Password: "",
+		DB: 0,
+	})
+	val, err := redisClient.HGet("user", "age").Result()
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(val + "a")
+
 }

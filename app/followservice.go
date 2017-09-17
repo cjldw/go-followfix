@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 	"log"
+	"github.com/go-redis/redis"
 )
 
 var followService *FollowService
@@ -101,8 +102,75 @@ func (followService *FollowService) WriteDbRedis( peerUID PeerUID)  {
 		log.Println(fmt.Sprintf("UPDATE ANCHOR OK ROW 【%d】", affectedRows))
 	}
 
-	//redisSocial, err := GetApp().redismgr.GetRedisByName(REDIS_SOCIAL)
-	//CheckErr(err)
+	redisSocial, err := GetApp().redismgr.GetRedisByName(REDIS_SOCIAL)
+	CheckErr(err)
+	var followListKey string = fmt.Sprintf("%s%d", FRIEND_SYSTEM_USER_FOLLOW, uid)
+	var fansListKey string = fmt.Sprintf("%s%d", FRIEND_SYSTEM_USER_FANS, uid)
+
+	// Fetch UID's Follow List And Storage To Social Redis
+	for  {
+		followUID := peerUID.FollowCnt.Pop()
+		if followUID == nil {
+			break
+		}
+		iFollowUID, ok := followUID.(int)
+		if !ok {
+			continue
+		}
+		followUIDFansCnt := getUIDFansCnt(iFollowUID)
+		item := redis.Z{
+			float64(followUIDFansCnt),
+			followUID,
+		}
+		redisSocial.RedisClient.ZAdd(followListKey, item)
+	}
+
+	for {
+		fansUID := peerUID.FansCnt.Pop()
+		if fansUID == nil {
+			break
+		}
+		iFansUID, ok := fansUID.(int)
+		if !ok {
+			continue
+		}
+		fansUIDFansCnt := getUIDFansCnt(iFansUID)
+		item := redis.Z{
+			float64(fansUIDFansCnt),
+			fansUID,
+		}
+		redisSocial.RedisClient.ZAdd(fansListKey, item)
+	}
+
+}
+
+// getUIDFansCnt get user's fans number
+// if redis cache return direct
+// or select from MySQL then save and return
+func getUIDFansCnt(uid int) int {
+	redisSocial, err := GetApp().redismgr.GetRedisByName(REDIS_SOCIAL)
+	CheckErr(err)
+	fansCntKey := fmt.Sprintf("id_%d_fanscnt", uid)
+	sFansCnt, err := redisSocial.RedisClient.HGet(TMP_UID_FANS_NUM, fansCntKey).Result()
+	if err == nil {
+		iFansCnt, err := strconv.Atoi(sFansCnt)
+		if err != nil {
+			return 0
+		}
+		return iFansCnt
+	}
+	var sql string
+	dbUserData, err := GetApp().dbmgr.GetDbByName(DB_USERS_DATA)
+	CheckErr(err)
+	var fansCnt, fragmentCnt int
+	for index := 0; index < USER_FOLLOW_SPLIT_TABLE_NUM ; index++ {
+		sql = fmt.Sprintf("select count(*) as fansCnt from user_follow_%d where anchor = %d and status = 1 " +
+			"and isFriends = 0", index, uid)
+		dbUserData.Db.QueryRow(sql).Scan(&fragmentCnt)
+		fansCnt += fragmentCnt
+	}
+	redisSocial.RedisClient.HSet(TMP_UID_FANS_NUM, fansCntKey, strconv.Itoa(fansCnt))
+	return fansCnt
 }
 
 // processSplitTable 处理分表数据
