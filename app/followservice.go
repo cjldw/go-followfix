@@ -31,7 +31,7 @@ var followOnce *sync.Once = &sync.Once{}
 func NewFollowService() *FollowService {
 	if followService == nil {
 		followOnce.Do(func() {
-			followService = &FollowService{set.New(), set.New(), &sync.RWMutex{}, make(chan PeerUID, 10), make(chan bool)}
+			followService = &FollowService{set.New(), set.New(), &sync.RWMutex{}, make(chan PeerUID, 50), make(chan bool)}
 		})
 	}
 	return followService
@@ -55,6 +55,7 @@ func (followService *FollowService) Produce()  {
 
 func (followService *FollowService) Consumer()  {
 	wg := &sync.WaitGroup{}
+	lock := &sync.RWMutex{}
 	log.Println("consumer start")
 	produceEnd := false
 	for  {
@@ -63,10 +64,10 @@ func (followService *FollowService) Consumer()  {
 			produceEnd = flag
 		case peerUID := <- followService.Traffic:
 			wg.Add(1)
-			go (func(wg *sync.WaitGroup, peerUID PeerUID) {
-				followService.WriteDbRedis(peerUID)
+			go (func(wg *sync.WaitGroup, lock *sync.RWMutex, peerUID PeerUID) {
+				followService.WriteDbRedis(peerUID, lock)
 				wg.Done()
-			})(wg, peerUID)
+			})(wg, lock, peerUID)
 		}
 		if produceEnd {
 			break
@@ -77,9 +78,12 @@ func (followService *FollowService) Consumer()  {
 }
 
 // WriteDbRedis 将单个UID用户写入到Reids中, 更新数据库
-func (followService *FollowService) WriteDbRedis( peerUID PeerUID)  {
+func (followService *FollowService) WriteDbRedis( peerUID PeerUID, lock *sync.RWMutex)  {
 	uid := peerUID.UID
 	fansCnt := peerUID.FansCnt.Size()
+
+	lock.Lock()
+	defer lock.Unlock()
 
 	dbUsersData, err := GetApp().dbmgr.GetDbByName(DB_USERS_DATA)
 	CheckErr(err)
@@ -208,7 +212,7 @@ func (followService *FollowService) processSplitTable(tablename string)  {
 		uniqueUIDSet.Add(uid)
 		uniqueUIDSet.Add(anchor)
 	}
-	uidChan := make(chan int, 10) // 10
+	uidChan := make(chan int, 50) // 10
 	for {
 		puid := uniqueUIDSet.Pop() // 14
 		if puid == nil {
