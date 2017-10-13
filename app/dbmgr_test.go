@@ -6,8 +6,10 @@ import (
 )
 
 func TestNewDbMgr(t *testing.T) {
-	GetApp()
+	conf := NewAppConf()
+	conf.Load("../conf/app.toml", true)
 	dbmgr := NewDbMgr()
+	dbmgr.InitializeDbList(conf.DbConf)
 	dbClient, _ := dbmgr.GetDbByName("users_data")
 	t.Log(dbClient)
 }

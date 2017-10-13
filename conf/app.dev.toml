@@ -1,17 +1,14 @@
-name = "datafix script"
+name = "follow_data_fix"
 version = "1.0"
 [dbConf]
 [dbConf.users_data]
- host = "10.62.62.114"
- username = "app_zhanqi"
- password = "123456"
- database = "users_data"
- port = 8066
+driver = "mysql"
+dsn = "root:111111@tcp(127.0.0.1:3306)/users_data?charset=utf8"
 
 [redisConf]
 [redisConf.social]
 host = "127.0.0.1"
-port = 6379
-socket = "/dev/shm/social.socket"
-db = 0
 password = ""
+port = 6379
+db = 0
+socket = ""

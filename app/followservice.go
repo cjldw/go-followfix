@@ -236,24 +236,23 @@ func (followService *FollowService) CalculateUIDFollowFansCnt(uid int, uidChan c
 	for index := 0; index < 10 ; index++  {
 		tablename = USER_FOLLOW_TABLE_PREFIX + strconv.Itoa(index)
 		followSql = fmt.Sprintf("select anchor from %s where uid = %d and isFriends = 0", tablename, uid)
-		//log.Println(followSql)
+		log.Println(followSql)
 		followRows, err := dbUsersData.Db.Query(followSql)
-		defer followRows.Close()
-		CheckErr(err)
 		for followRows.Next() {
 			followRows.Scan(&anchor)
 			followCntSet.Add(anchor)
 		}
+		followRows.Close()
 
 		fansSql = fmt.Sprintf("select uid from %s where anchor = %d and isFriends = 0", tablename, uid)
 		//log.Println(fansSql)
 		fansRows, err := dbUsersData.Db.Query(fansSql)
-		defer fansRows.Close()
 		CheckErr(err)
 		for fansRows.Next() {
 			fansRows.Scan(&anchor)
 			fansCntSet.Add(anchor)
 		}
+		fansRows.Close()
 	}
 
 	peerUID := PeerUID{UID:uid, FollowCnt:followCntSet, FansCnt:fansCntSet}

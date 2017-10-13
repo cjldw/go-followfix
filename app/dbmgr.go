@@ -1,4 +1,5 @@
 package app
+
 import (
 	"database/sql"
 	"fmt"
@@ -12,6 +13,7 @@ type DbMgr struct {
 
 // db list instance
 var dbList map[string] *sql.DB = make(map[string]*sql.DB)
+var dbConfigMap map[string] DbInst = make(map[string]DbInst)
 
 // NewDbMgr struct
 func NewDbMgr() *DbMgr {
@@ -19,8 +21,9 @@ func NewDbMgr() *DbMgr {
 }
 
 // InitializeDbList initialize Db List instance
-func (dbMgr *DbMgr) InitializeDbList(dbConfigMap map[string]DbInst)  {
-	for dbKey, dbConf := range dbConfigMap {
+func (dbMgr *DbMgr) InitializeDbList(dbConfig map[string]DbInst)  {
+	dbConfigMap = dbConfig
+	for dbKey, dbConf := range dbConfig {
 		_, ok := dbList[dbKey]
 		if ok { continue }
 		dbClient, err := sql.Open(dbConf.Driver, dbConf.Dsn)
@@ -35,8 +38,14 @@ func (dbMgr *DbMgr) GetDbByName(dbKey string) (*DbMgr, error) {
 	if !ok {
 		return nil, errors.New(fmt.Sprintf("db 【%s】not exists！", dbKey))
 	}
-	if dbClient.Ping() != nil {
-		return nil, errors.New(fmt.Sprintf("db 【%s】 go away！", dbKey))
+	if dbClient.Ping() != nil { // connect one more time
+		dbConf, ok := dbConfigMap[dbKey]
+		if !ok {
+			return nil, errors.New(fmt.Sprintf("db config【%s】 missing ！", dbKey))
+		}
+		newDbClient, err := sql.Open(dbConf.Driver, dbConf.Dsn)
+		ThrowErr(err)
+		dbList[dbKey], dbClient = newDbClient, newDbClient
 	}
 	dbMgr.Db = dbClient
 	return dbMgr, nil
