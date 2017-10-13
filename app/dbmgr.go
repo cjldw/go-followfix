@@ -47,7 +47,9 @@ func (dbMgr *DbMgr) GetDbByName(dbKey string) (*DbMgr, error) {
 		log.Println("Reconnect MySQL !")
 		newDbClient, err := sql.Open(dbConf.Driver, dbConf.Dsn)
 		ThrowErr(err)
-		dbList[dbKey], dbClient = newDbClient, newDbClient
+		//dbList[dbKey], dbClient = newDbClient, newDbClient
+		dbList[dbKey] = newDbClient
+		dbClient = newDbClient
 	}
 	dbMgr.Db = dbClient
 	return dbMgr, nil
