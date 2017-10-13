@@ -208,7 +208,7 @@ func (followService *FollowService) processSplitTable(tablename string)  {
 		uniqueUIDSet.Add(uid)
 		uniqueUIDSet.Add(anchor)
 	}
-	uidChan := make(chan int, 100) // 10
+	uidChan := make(chan int, 10) // 10
 	for {
 		puid := uniqueUIDSet.Pop() // 14
 		if puid == nil {
