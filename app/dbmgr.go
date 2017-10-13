@@ -39,17 +39,19 @@ func (dbMgr *DbMgr) GetDbByName(dbKey string) (*DbMgr, error) {
 	if !ok {
 		return nil, errors.New(fmt.Sprintf("db 【%s】not exists！", dbKey))
 	}
-	if dbClient.Ping() != nil { // connect one more time
+	if dbClient.Ping() == nil { // connect one more time
+		dbClient.Close()
 		dbConf, ok := dbConfigMap[dbKey]
 		if !ok {
 			return nil, errors.New(fmt.Sprintf("db config【%s】 missing ！", dbKey))
 		}
 		log.Println("Reconnect MySQL !")
 		newDbClient, err := sql.Open(dbConf.Driver, dbConf.Dsn)
+		fmt.Println(newDbClient)
 		ThrowErr(err)
 		//dbList[dbKey], dbClient = newDbClient, newDbClient
-		dbList[dbKey] = newDbClient
 		dbClient = newDbClient
+		dbList[dbKey] = newDbClient
 	}
 	dbMgr.Db = dbClient
 	return dbMgr, nil
