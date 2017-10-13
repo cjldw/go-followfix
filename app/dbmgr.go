@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"errors"
 	_ "github.com/go-sql-driver/mysql"
+	"log"
 )
 
 type DbMgr struct {
@@ -43,6 +44,7 @@ func (dbMgr *DbMgr) GetDbByName(dbKey string) (*DbMgr, error) {
 		if !ok {
 			return nil, errors.New(fmt.Sprintf("db config【%s】 missing ！", dbKey))
 		}
+		log.Println("Reconnect MySQL !")
 		newDbClient, err := sql.Open(dbConf.Driver, dbConf.Dsn)
 		ThrowErr(err)
 		dbList[dbKey], dbClient = newDbClient, newDbClient
