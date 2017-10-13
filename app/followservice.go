@@ -31,7 +31,7 @@ var followOnce *sync.Once = &sync.Once{}
 func NewFollowService() *FollowService {
 	if followService == nil {
 		followOnce.Do(func() {
-			followService = &FollowService{set.New(), set.New(), &sync.RWMutex{}, make(chan PeerUID, 100), make(chan bool)}
+			followService = &FollowService{set.New(), set.New(), &sync.RWMutex{}, make(chan PeerUID, 10), make(chan bool)}
 		})
 	}
 	return followService
@@ -174,7 +174,7 @@ func getUIDFansCnt(uid int) int {
 }
 
 // processSplitTable 处理分表数据
-func (followService *FollowService)processSplitTable(tablename string)  {
+func (followService *FollowService) processSplitTable(tablename string)  {
 	dbUsersData, err := GetApp().dbmgr.GetDbByName(DB_USERS_DATA)
 	CheckErr(err)
 	sql := fmt.Sprintf("select uid, anchor from %s where isFriends = 0", tablename)
@@ -208,7 +208,7 @@ func (followService *FollowService)processSplitTable(tablename string)  {
 		uniqueUIDSet.Add(uid)
 		uniqueUIDSet.Add(anchor)
 	}
-	uidChan := make(chan int, 1000) // 10
+	uidChan := make(chan int, 100) // 10
 	for {
 		puid := uniqueUIDSet.Pop() // 14
 		if puid == nil {
@@ -238,21 +238,22 @@ func (followService *FollowService) CalculateUIDFollowFansCnt(uid int, uidChan c
 		followSql = fmt.Sprintf("select anchor from %s where uid = %d and isFriends = 0", tablename, uid)
 		log.Println(followSql)
 		followRows, err := dbUsersData.Db.Query(followSql)
+		defer followRows.Close()
+		CheckErr(err)
 		for followRows.Next() {
 			followRows.Scan(&anchor)
 			followCntSet.Add(anchor)
 		}
-		followRows.Close()
 
 		fansSql = fmt.Sprintf("select uid from %s where anchor = %d and isFriends = 0", tablename, uid)
 		//log.Println(fansSql)
 		fansRows, err := dbUsersData.Db.Query(fansSql)
+		defer fansRows.Close()
 		CheckErr(err)
 		for fansRows.Next() {
 			fansRows.Scan(&anchor)
 			fansCntSet.Add(anchor)
 		}
-		fansRows.Close()
 	}
 
 	peerUID := PeerUID{UID:uid, FollowCnt:followCntSet, FansCnt:fansCntSet}
