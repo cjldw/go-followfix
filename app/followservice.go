@@ -123,8 +123,8 @@ func (followService *FollowService) WriteDbRedis( peerUID PeerUID, lock *sync.RW
 		}
 		followUIDFansCnt := getUIDFansCnt(iFollowUID)
 		item := redis.Z{
-			float64(followUIDFansCnt),
-			followUID,
+			Score: float64(followUIDFansCnt),
+			Member: followUID,
 		}
 		redisSocial.RedisClient.ZAdd(followListKey, item)
 	}
@@ -140,8 +140,8 @@ func (followService *FollowService) WriteDbRedis( peerUID PeerUID, lock *sync.RW
 		}
 		fansUIDFansCnt := getUIDFansCnt(iFansUID)
 		item := redis.Z{
-			float64(fansUIDFansCnt),
-			fansUID,
+			Score: float64(fansUIDFansCnt),
+			Member: fansUID,
 		}
 		redisSocial.RedisClient.ZAdd(fansListKey, item)
 	}
@@ -242,22 +242,23 @@ func (followService *FollowService) CalculateUIDFollowFansCnt(uid int, uidChan c
 		followSql = fmt.Sprintf("select anchor from %s where uid = %d and isFriends = 0", tablename, uid)
 		log.Println(followSql)
 		followRows, err := dbUsersData.Db.Query(followSql)
-		defer followRows.Close()
 		CheckErr(err)
 		for followRows.Next() {
 			followRows.Scan(&anchor)
 			followCntSet.Add(anchor)
 		}
+		followRows.Close()
 
 		fansSql = fmt.Sprintf("select uid from %s where anchor = %d and isFriends = 0", tablename, uid)
 		//log.Println(fansSql)
 		fansRows, err := dbUsersData.Db.Query(fansSql)
-		defer fansRows.Close()
+		fansRows.Close()
 		CheckErr(err)
 		for fansRows.Next() {
 			fansRows.Scan(&anchor)
 			fansCntSet.Add(anchor)
 		}
+		fansRows.Close()
 	}
 
 	peerUID := PeerUID{UID:uid, FollowCnt:followCntSet, FansCnt:fansCntSet}
