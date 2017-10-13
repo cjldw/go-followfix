@@ -1,0 +1,52 @@
+{
+	"ImportPath": "github.com/vvotm/go-followfix",
+	"GoVersion": "go1.8",
+	"GodepVersion": "v79",
+	"Deps": [
+		{
+			"ImportPath": "github.com/BurntSushi/toml",
+			"Comment": "v0.3.0-7-ga368813",
+			"Rev": "a368813c5e648fee92e5f6c30e3944ff9d5e8895"
+		},
+		{
+			"ImportPath": "github.com/go-redis/redis",
+			"Comment": "v6.5.7",
+			"Rev": "19c1c2272e00c1aaa903cf574c746cd449f9cd3c"
+		},
+		{
+			"ImportPath": "github.com/go-redis/redis/internal",
+			"Comment": "v6.5.7",
+			"Rev": "19c1c2272e00c1aaa903cf574c746cd449f9cd3c"
+		},
+		{
+			"ImportPath": "github.com/go-redis/redis/internal/consistenthash",
+			"Comment": "v6.5.7",
+			"Rev": "19c1c2272e00c1aaa903cf574c746cd449f9cd3c"
+		},
+		{
+			"ImportPath": "github.com/go-redis/redis/internal/hashtag",
+			"Comment": "v6.5.7",
+			"Rev": "19c1c2272e00c1aaa903cf574c746cd449f9cd3c"
+		},
+		{
+			"ImportPath": "github.com/go-redis/redis/internal/pool",
+			"Comment": "v6.5.7",
+			"Rev": "19c1c2272e00c1aaa903cf574c746cd449f9cd3c"
+		},
+		{
+			"ImportPath": "github.com/go-redis/redis/internal/proto",
+			"Comment": "v6.5.7",
+			"Rev": "19c1c2272e00c1aaa903cf574c746cd449f9cd3c"
+		},
+		{
+			"ImportPath": "github.com/go-sql-driver/mysql",
+			"Comment": "v1.3-21-ge3f0fdc",
+			"Rev": "e3f0fdcf52770a162d5a4540ddb8d9957ff456d1"
+		},
+		{
+			"ImportPath": "gopkg.in/fatih/set.v0",
+			"Comment": "v0.1.0-3-g27c4092",
+			"Rev": "27c40922c40b43fe04554d8223a402af3ea333f3"
+		}
+	]
+}
