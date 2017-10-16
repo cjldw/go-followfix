@@ -10,10 +10,9 @@ import (
 func main()  {
 	numCpu := runtime.NumCPU()
 	runtime.GOMAXPROCS(numCpu)
-	startProfile := time.Now()
+	prof := time.Now()
 	appInst := app.NewApp()
 	appInst.Run()
-	endProfile := time.Now()
-	log.Printf("总共花费 【%f.2】秒！", endProfile.Sub(startProfile).Seconds())
+	log.Printf("总共花费 【%f.2】秒！", time.Since(prof).Seconds())
 
 }
