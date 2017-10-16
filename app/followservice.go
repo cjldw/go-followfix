@@ -112,6 +112,8 @@ func (followService *FollowService) WriteDbRedis( peerUID PeerUID, lock *sync.RW
 	var fansListKey string = fmt.Sprintf("%s%d", FRIEND_SYSTEM_USER_FANS, uid)
 	var friendsListKey string = fmt.Sprintf("%s%d", FRIEND_SYSTEM_USER_FRIENDS, uid)
 
+	log.Printf("PEEUID对象信息 :%v\n", peerUID)
+
 	// Fetch UID's Follow List And Storage To Social Redis
 	for  { // 处理关注
 		followUID := peerUID.FollowCnt.Pop()
