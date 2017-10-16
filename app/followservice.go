@@ -255,7 +255,6 @@ func (followService *FollowService) CalculateUIDFollowFansCnt(uid int, uidChan c
 		fansSql = fmt.Sprintf("select uid from %s where anchor = %d and isFriends = 0", tablename, uid)
 		//log.Println(fansSql)
 		fansRows, err := dbUsersData.Db.Query(fansSql)
-		fansRows.Close()
 		CheckErr(err)
 		for fansRows.Next() {
 			fansRows.Scan(&anchor)
