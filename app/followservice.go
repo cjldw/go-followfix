@@ -42,12 +42,12 @@ func (followService *FollowService) Produce()  {
 	for table := 0; table < USER_FOLLOW_SPLIT_TABLE_NUM ; table++  {
 		tablename := USER_FOLLOW_TABLE_PREFIX + strconv.Itoa(table)
 		wg.Add(1)
-		go (func(wg *sync.WaitGroup, followService *FollowService, tablename string) {
+		go (func() {
 			log.Println(fmt.Sprintf("Process table 【%s】start", tablename))
 			followService.processSplitTable(tablename)
 			log.Println(fmt.Sprintf("Process table 【%s】end", tablename))
 			wg.Done()
-		})(wg, followService, tablename)
+		})()
 	}
 	wg.Wait()
 	followService.ProduceEnd <- true // mark as produce end
@@ -64,10 +64,10 @@ func (followService *FollowService) Consumer()  {
 			produceEnd = flag
 		case peerUID := <- followService.Traffic:
 			wg.Add(1)
-			go (func(wg *sync.WaitGroup, lock *sync.RWMutex, peerUID PeerUID) {
+			go (func() {
 				followService.WriteDbRedis(peerUID, lock)
 				wg.Done()
-			})(wg, lock, peerUID)
+			})()
 		}
 		if produceEnd {
 			break
@@ -80,11 +80,13 @@ func (followService *FollowService) Consumer()  {
 // WriteDbRedis 将单个UID用户写入到Reids中, 更新数据库
 func (followService *FollowService) WriteDbRedis( peerUID PeerUID, lock *sync.RWMutex)  {
 	uid := peerUID.UID
-	fansCnt := peerUID.FansCnt.Size()
+	// fansCnt := peerUID.FansCnt.Size()
 
-	lock.Lock()
-	defer lock.Unlock()
+	// lock.Lock()
+	// defer lock.Unlock()
+	log.Printf("Write to [%d] to redis", uid)
 
+	/*
 	dbUsersData, err := GetApp().dbmgr.GetDbByName(DB_USERS_DATA)
 	CheckErr(err)
 	tableName := USER_FOLLOW_TABLE_PREFIX + strconv.Itoa(uid % USER_FOLLOW_SPLIT_TABLE_NUM)
@@ -105,6 +107,7 @@ func (followService *FollowService) WriteDbRedis( peerUID PeerUID, lock *sync.RW
 		CheckErr(err)
 		log.Println(fmt.Sprintf("UPDATE ANCHOR OK ROW 【%d】", affectedRows))
 	}
+	*/
 
 	redisSocial, err := GetApp().redismgr.GetRedisByName(REDIS_SOCIAL)
 	CheckErr(err)

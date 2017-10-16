@@ -39,7 +39,7 @@ func (dbMgr *DbMgr) GetDbByName(dbKey string) (*DbMgr, error) {
 	if !ok {
 		return nil, errors.New(fmt.Sprintf("db 【%s】not exists！", dbKey))
 	}
-	if dbClient.Ping() == nil { // connect one more time
+	if dbClient.Ping() != nil { // connect one more time
 		dbClient.Close()
 		dbConf, ok := dbConfigMap[dbKey]
 		if !ok {
