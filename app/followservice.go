@@ -43,9 +43,7 @@ func (followService *FollowService) Produce()  {
 		tablename := USER_FOLLOW_TABLE_PREFIX + strconv.Itoa(table)
 		wg.Add(1)
 		go (func() {
-			log.Println(fmt.Sprintf("Process table 【%s】start", tablename))
 			followService.processSplitTable(tablename)
-			log.Println(fmt.Sprintf("Process table 【%s】end", tablename))
 			wg.Done()
 		})()
 	}

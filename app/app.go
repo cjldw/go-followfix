@@ -25,7 +25,7 @@ func NewApp() *App  {
 		return app
 	}
 	appOnce.Do(func() {
-		app = &App{}
+		app = &App{isInitialize:true}
 		app.confmgr = (func() *AppConf{
 			appconf, err := NewAppConf().Load(APP_CONFIG_PATH, false)
 			CheckErr(err)
