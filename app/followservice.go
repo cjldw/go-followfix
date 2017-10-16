@@ -117,7 +117,7 @@ func (followService *FollowService) WriteDbRedis( peerUID PeerUID, lock *sync.RW
 	// Fetch UID's Follow List And Storage To Social Redis
 	for  { // 处理关注
 		followUID := peerUID.FollowCnt.Pop()
-		log.Printf("用户[%d]关注 ->［%v］", uid, followUID)
+		log.Printf("用户[%d]关注 ->［%v］\n", uid, followUID)
 		if peerUID.FollowCnt.Size() == 0 {
 			break
 		}
@@ -126,7 +126,6 @@ func (followService *FollowService) WriteDbRedis( peerUID PeerUID, lock *sync.RW
 			continue
 		}
 		followUIDFansCnt := getUIDFansCnt(iFollowUID)
-		log.Printf("用户[%d]粉丝 ->［%v］", uid, followUID)
 		item := redis.Z{
 			Score: float64(followUIDFansCnt),
 			Member: followUID,
@@ -136,6 +135,7 @@ func (followService *FollowService) WriteDbRedis( peerUID PeerUID, lock *sync.RW
 
 	for { // 处理粉丝
 		fansUID := peerUID.FansCnt.Pop()
+		log.Printf("用户[%d]粉丝 ->［%v］\n", uid, fansUID)
 		if peerUID.FansCnt.Size() == 0 {
 			break
 		}
@@ -153,6 +153,7 @@ func (followService *FollowService) WriteDbRedis( peerUID PeerUID, lock *sync.RW
 
 	for { // 处理好友
 		friendsUID := peerUID.FriendsCnt.Pop()
+		log.Printf("用户[%d]好有 ->［%v］\n", uid, friendsUID)
 		if peerUID.FriendsCnt.Size() == 0 {
 			break
 		}
@@ -179,13 +180,13 @@ func getUIDFansCnt(uid int) int {
 	fansCntKey := fmt.Sprintf("id_%d_fanscnt", uid)
 	log.Println(fansCntKey)
 	sFansCnt, err := redisSocial.RedisClient.HGet(TMP_UID_FANS_NUM, fansCntKey).Result()
-	log.Println(sFansCnt)
 	if err == nil {
 		iFansCnt, err := strconv.Atoi(sFansCnt)
 		if err != nil {
 			log.Printf("Convert fans count [%s] ERROR!\n", sFansCnt)
 			return 0
 		}
+		log.Printf("UID[%s] 缓存中获取 [%d]", fansCntKey, iFansCnt)
 		return iFansCnt
 	}
 	var sql string
@@ -195,10 +196,10 @@ func getUIDFansCnt(uid int) int {
 	for index := 0; index < USER_FOLLOW_SPLIT_TABLE_NUM ; index++ {
 		sql = fmt.Sprintf("select count(*) as fansCnt from user_follow_%d where anchor = %d and status = 1 " +
 			"and isFriends = 0", index, uid)
-		log.Println("查询粉丝数量:" + sql)
 		dbUserData.Db.QueryRow(sql).Scan(&fragmentCnt)
 		fansCnt += fragmentCnt
 	}
+	log.Printf("UID[%s] 粉丝数量 [%d]", fansCntKey, fansCnt)
 	redisSocial.RedisClient.HSet(TMP_UID_FANS_NUM, fansCntKey, strconv.Itoa(fansCnt))
 	return fansCnt
 }
