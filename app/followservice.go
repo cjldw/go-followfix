@@ -173,7 +173,7 @@ func getUIDFansCnt(uid int) int {
 	for index := 0; index < USER_FOLLOW_SPLIT_TABLE_NUM ; index++ {
 		sql = fmt.Sprintf("select count(*) as fansCnt from user_follow_%d where anchor = %d and status = 1 " +
 			"and isFriends = 0", index, uid)
-		log.Println(sql)
+		log.Println("查询粉丝数量:" + sql)
 		dbUserData.Db.QueryRow(sql).Scan(&fragmentCnt)
 		fansCnt += fragmentCnt
 	}
