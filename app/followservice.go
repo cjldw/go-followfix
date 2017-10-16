@@ -5,7 +5,6 @@ import (
 	set "gopkg.in/fatih/set.v0"
 	"fmt"
 	"strconv"
-	"strings"
 	"log"
 	"github.com/go-redis/redis"
 )
@@ -24,6 +23,7 @@ type PeerUID struct {
 	UID int
 	FollowCnt *set.Set
 	FansCnt *set.Set
+	FriendsCnt *set.Set
 }
 
 var followOnce *sync.Once = &sync.Once{}
@@ -71,7 +71,7 @@ func (followService *FollowService) Consumer()  {
 		}
 	}
 	wg.Wait()
-	log.Println("consumer end")
+	log.Println("所有用户数据处理完毕")
 }
 
 // WriteDbRedis 将单个UID用户写入到Reids中, 更新数据库
@@ -110,10 +110,12 @@ func (followService *FollowService) WriteDbRedis( peerUID PeerUID, lock *sync.RW
 	CheckErr(err)
 	var followListKey string = fmt.Sprintf("%s%d", FRIEND_SYSTEM_USER_FOLLOW, uid)
 	var fansListKey string = fmt.Sprintf("%s%d", FRIEND_SYSTEM_USER_FANS, uid)
+	var friendsListKey string = fmt.Sprintf("%s%d", FRIEND_SYSTEM_USER_FRIENDS, uid)
 
 	// Fetch UID's Follow List And Storage To Social Redis
-	for  {
+	for  { // 处理关注
 		followUID := peerUID.FollowCnt.Pop()
+		log.Printf("用户[%d]关注 ->［%v］", uid, followUID)
 		if followUID == nil {
 			break
 		}
@@ -122,6 +124,7 @@ func (followService *FollowService) WriteDbRedis( peerUID PeerUID, lock *sync.RW
 			continue
 		}
 		followUIDFansCnt := getUIDFansCnt(iFollowUID)
+		log.Printf("用户[%d]粉丝 ->［%v］", uid, followUID)
 		item := redis.Z{
 			Score: float64(followUIDFansCnt),
 			Member: followUID,
@@ -129,7 +132,7 @@ func (followService *FollowService) WriteDbRedis( peerUID PeerUID, lock *sync.RW
 		redisSocial.RedisClient.ZAdd(followListKey, item)
 	}
 
-	for {
+	for { // 处理粉丝
 		fansUID := peerUID.FansCnt.Pop()
 		if fansUID == nil {
 			break
@@ -144,6 +147,23 @@ func (followService *FollowService) WriteDbRedis( peerUID PeerUID, lock *sync.RW
 			Member: fansUID,
 		}
 		redisSocial.RedisClient.ZAdd(fansListKey, item)
+	}
+
+	for { // 处理好友
+		friendsUID := peerUID.FriendsCnt.Pop()
+		if friendsUID == nil {
+			break
+		}
+		iFriendUID, ok := friendsUID.(int)
+		if !ok {
+			continue
+		}
+		friendsUIDFansCnt := getUIDFansCnt(iFriendUID)
+		item := redis.Z{
+			Score: float64(friendsUIDFansCnt),
+			Member: friendsUID,
+		}
+		redisSocial.RedisClient.ZAdd(friendsListKey, item)
 	}
 
 }
@@ -186,6 +206,7 @@ func (followService *FollowService) processSplitTable(tablename string)  {
 	dbUsersData, err := GetApp().dbmgr.GetDbByName(DB_USERS_DATA)
 	CheckErr(err)
 	sql := fmt.Sprintf("select uid, anchor from %s where isFriends = 0", tablename)
+	/*
 	if !followService.excludeUIDSet.IsEmpty() { // exclude has process uid
 		uidList1 := followService.excludeUIDSet.List()
 		uidList2 := make([]string, len(uidList1))
@@ -196,6 +217,7 @@ func (followService *FollowService) processSplitTable(tablename string)  {
 		sql += fmt.Sprintf(" and uid not in (%s)", strings.Join(uidList2, ","))
 	}
 	if !followService.excludeAnchorIdSet.IsEmpty() { // exclude has process anchor
+
 		anchorIdList := followService.excludeAnchorIdSet.List()
 		anchorIdList2 := make([]string, len(anchorIdList))
 		for index := range anchorIdList {
@@ -203,6 +225,7 @@ func (followService *FollowService) processSplitTable(tablename string)  {
 		}
 		sql += fmt.Sprintf(" and anchor not in (%s)", strings.Join(anchorIdList2, ","))
 	}
+	*/
 	log.Println(sql)
 	dbRows, err := dbUsersData.Db.Query(sql)
 	defer dbRows.Close()
@@ -211,8 +234,8 @@ func (followService *FollowService) processSplitTable(tablename string)  {
 	var uid, anchor int
 	for dbRows.Next() {
 		dbRows.Scan(&uid, &anchor)
-		followService.excludeUIDSet.Add(uid) // record
-		followService.excludeAnchorIdSet.Add(anchor)
+		// followService.excludeUIDSet.Add(uid) // record
+		// followService.excludeAnchorIdSet.Add(anchor)
 		uniqueUIDSet.Add(uid)
 		uniqueUIDSet.Add(anchor)
 	}
@@ -239,12 +262,13 @@ func (followService *FollowService) CalculateUIDFollowFansCnt(uid int, uidChan c
 
 	followCntSet := set.New()
 	fansCntSet := set.New()
+	friendsCntSet := set.New()
 	var followSql, fansSql, tablename string
-	var anchor int
+	var anchor , friendsCnt int
 	for index := 0; index < 10 ; index++  {
 		tablename = USER_FOLLOW_TABLE_PREFIX + strconv.Itoa(index)
-		followSql = fmt.Sprintf("select anchor from %s where uid = %d and isFriends = 0", tablename, uid)
-		log.Println(followSql)
+		followSql = fmt.Sprintf("select anchor from %s where uid = %d and isFriends = 0 and status = 1", tablename, uid)
+		//log.Println(followSql)
 		followRows, err := dbUsersData.Db.Query(followSql)
 		CheckErr(err)
 		for followRows.Next() {
@@ -253,7 +277,7 @@ func (followService *FollowService) CalculateUIDFollowFansCnt(uid int, uidChan c
 		}
 		followRows.Close()
 
-		fansSql = fmt.Sprintf("select uid from %s where anchor = %d and isFriends = 0", tablename, uid)
+		fansSql = fmt.Sprintf("select uid from %s where anchor = %d and isFriends = 0 and status = 1", tablename, uid)
 		//log.Println(fansSql)
 		fansRows, err := dbUsersData.Db.Query(fansSql)
 		CheckErr(err)
@@ -262,9 +286,19 @@ func (followService *FollowService) CalculateUIDFollowFansCnt(uid int, uidChan c
 			fansCntSet.Add(anchor)
 		}
 		fansRows.Close()
+
+		friendsSql := fmt.Sprintf("select uid from %s　where uid = %d and isFriends = 1 and status = 1", tablename, uid)
+		friendsRows, err := dbUsersData.Db.Query(friendsSql)
+		CheckErr(err)
+
+		for friendsRows.Next() {
+			friendsRows.Scan(&friendsCnt)
+			friendsCntSet.Add(friendsCnt)
+		}
+		friendsRows.Close()
 	}
 
-	peerUID := PeerUID{UID:uid, FollowCnt:followCntSet, FansCnt:fansCntSet}
+	peerUID := PeerUID{UID:uid, FollowCnt:followCntSet, FansCnt:fansCntSet, FriendsCnt: friendsCntSet}
 	followService.Traffic <- peerUID
 	<- uidChan
 }
