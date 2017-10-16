@@ -290,7 +290,7 @@ func (followService *FollowService) CalculateUIDFollowFansCnt(uid int, uidChan c
 		}
 		fansRows.Close()
 
-		friendsSql := fmt.Sprintf("select uid from %s　where uid = %d and isFriends = 1 and status = 1", tablename, uid)
+		friendsSql := fmt.Sprintf("select uid from %s where uid = %d and isFriends = 1 and status = 1", tablename, uid)
 		friendsRows, err := dbUsersData.Db.Query(friendsSql)
 		CheckErr(err)
 
