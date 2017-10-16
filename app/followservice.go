@@ -31,7 +31,7 @@ var followOnce *sync.Once = &sync.Once{}
 func NewFollowService() *FollowService {
 	if followService == nil {
 		followOnce.Do(func() {
-			followService = &FollowService{set.New(), set.New(), &sync.RWMutex{}, make(chan PeerUID, 50), make(chan bool)}
+			followService = &FollowService{set.New(), set.New(), &sync.RWMutex{}, make(chan PeerUID, 20), make(chan bool)}
 		})
 	}
 	return followService
@@ -265,8 +265,6 @@ func (followService *FollowService) CalculateUIDFollowFansCnt(uid int, uidChan c
 	}
 
 	peerUID := PeerUID{UID:uid, FollowCnt:followCntSet, FansCnt:fansCntSet}
-	followService.Lock.RLock()
-	defer followService.Lock.RUnlock()
 	followService.Traffic <- peerUID
 	<- uidChan
 }
