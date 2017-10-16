@@ -27,6 +27,7 @@ func (dbMgr *DbMgr) InitializeDbList(dbConfig map[string]DbInst)  {
 	for dbKey, dbConf := range dbConfig {
 		_, ok := dbList[dbKey]
 		if ok { continue }
+		log.Printf("initialize dbconnection %s \n", dbKey)
 		dbClient, err := sql.Open(dbConf.Driver, dbConf.Dsn)
 		ThrowErr(err)
 		dbList[dbKey] = dbClient
