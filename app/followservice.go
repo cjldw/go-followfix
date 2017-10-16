@@ -48,26 +48,22 @@ func (followService *FollowService) Produce()  {
 		})()
 	}
 	wg.Wait()
-	followService.ProduceEnd <- true // mark as produce end
+	followService.ProduceEnd <- true
 }
 
 func (followService *FollowService) Consumer()  {
 	wg := &sync.WaitGroup{}
 	lock := &sync.RWMutex{}
-	produceEnd := false
 	for  {
 		select {
-		case flag := <- followService.ProduceEnd:
-			produceEnd = flag
+		case  <- followService.ProduceEnd:
+			break
 		case peerUID := <- followService.Traffic:
 			wg.Add(1)
 			go (func() {
 				followService.WriteDbRedis(peerUID, lock)
 				wg.Done()
 			})()
-		}
-		if produceEnd {
-			break
 		}
 	}
 	wg.Wait()
@@ -242,10 +238,11 @@ func (followService *FollowService) processSplitTable(tablename string)  {
 		uniqueUIDSet.Add(uid)
 		uniqueUIDSet.Add(anchor)
 	}
+	log.Printf("表 [%s] 共[%d] 个UID ", tablename, uniqueUIDSet.Size())
 	uidChan := make(chan int, 20) // 10
 	for {
 		puid := uniqueUIDSet.Pop() // 14
-		if puid == nil {
+		if uniqueUIDSet.Size() == 0 {
 			break
 		}
 		opuid := puid.(int)
