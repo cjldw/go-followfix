@@ -6,10 +6,12 @@ import (
 	"errors"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
+	"sync"
 )
 
 type DbMgr struct {
 	Db *sql.DB
+	Lock *sync.RWMutex
 }
 
 // db list instance
@@ -18,7 +20,7 @@ var dbConfigMap map[string] DbInst = make(map[string]DbInst)
 
 // NewDbMgr struct
 func NewDbMgr() *DbMgr {
-	return &DbMgr{}
+	return &DbMgr{Lock:&sync.RWMutex{}}
 }
 
 // InitializeDbList initialize Db List instance
@@ -36,6 +38,8 @@ func (dbMgr *DbMgr) InitializeDbList(dbConfig map[string]DbInst)  {
 
 // GetDbByName get database instance by configure file name
 func (dbMgr *DbMgr) GetDbByName(dbKey string) (*DbMgr, error) {
+	dbMgr.Lock.Lock()
+	defer dbMgr.Lock.Unlock()
 	dbClient, ok := dbList[dbKey]
 	if !ok {
 		return nil, errors.New(fmt.Sprintf("db 【%s】not exists！", dbKey))
