@@ -60,3 +60,9 @@ func TestHashGet(t *testing.T)  {
 	t.Log(val + "a")
 
 }
+
+func TestGetUIDFansCnt(t *testing.T)  {
+
+	fans150cnt := getUIDFansCnt(21548699)
+	t.Log(fans150cnt)
+}

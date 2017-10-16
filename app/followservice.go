@@ -158,10 +158,13 @@ func getUIDFansCnt(uid int) int {
 	redisSocial, err := GetApp().redismgr.GetRedisByName(REDIS_SOCIAL)
 	CheckErr(err)
 	fansCntKey := fmt.Sprintf("id_%d_fanscnt", uid)
+	log.Println(fansCntKey)
 	sFansCnt, err := redisSocial.RedisClient.HGet(TMP_UID_FANS_NUM, fansCntKey).Result()
+	log.Println(sFansCnt)
 	if err == nil {
 		iFansCnt, err := strconv.Atoi(sFansCnt)
 		if err != nil {
+			log.Printf("Convert fans count [%s] ERROR!\n", sFansCnt)
 			return 0
 		}
 		return iFansCnt
@@ -173,6 +176,7 @@ func getUIDFansCnt(uid int) int {
 	for index := 0; index < USER_FOLLOW_SPLIT_TABLE_NUM ; index++ {
 		sql = fmt.Sprintf("select count(*) as fansCnt from user_follow_%d where anchor = %d and status = 1 " +
 			"and isFriends = 0", index, uid)
+		log.Println(sql)
 		dbUserData.Db.QueryRow(sql).Scan(&fragmentCnt)
 		fansCnt += fragmentCnt
 	}
