@@ -5,10 +5,12 @@ import (
 	"errors"
 	"fmt"
 	//"log"
+	"sync"
 )
 
 type RedisMgr struct {
 	RedisClient *redis.Client
+	Lock *sync.RWMutex
 }
 
 // redis list container
@@ -16,7 +18,7 @@ var redisList map[string]*redis.Client = make(map[string]*redis.Client)
 
 // NewRedisMgr create redisMgr object
 func NewRedisMgr() *RedisMgr {
-	return &RedisMgr{}
+	return &RedisMgr{Lock:&sync.RWMutex{}}
 }
 
 // InitializeRedisList
@@ -46,6 +48,8 @@ func (RedisMgr *RedisMgr) InitializeRedisList (redisConfMap map[string]RedisInst
 // GetRedisInstByName
 // get redis instance by redis configure
 func (redisMgr *RedisMgr) GetRedisByName(redisKey string) (*RedisMgr , error) {
+	redisMgr.Lock.Lock()
+	defer redisMgr.Lock.Unlock()
 	redisClient, ok := redisList[redisKey]
 	if !ok {
 		return nil, errors.New(fmt.Sprintf("Redis Key 【%s】not exists！", redisKey))
