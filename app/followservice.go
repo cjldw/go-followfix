@@ -54,7 +54,6 @@ func (followService *FollowService) Produce()  {
 func (followService *FollowService) Consumer()  {
 	wg := &sync.WaitGroup{}
 	lock := &sync.RWMutex{}
-	log.Println("consumer start")
 	produceEnd := false
 	for  {
 		select {
@@ -217,7 +216,7 @@ func (followService *FollowService) processSplitTable(tablename string)  {
 		uniqueUIDSet.Add(uid)
 		uniqueUIDSet.Add(anchor)
 	}
-	uidChan := make(chan int, 50) // 10
+	uidChan := make(chan int, 20) // 10
 	for {
 		puid := uniqueUIDSet.Pop() // 14
 		if puid == nil {
