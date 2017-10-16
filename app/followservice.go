@@ -116,7 +116,7 @@ func (followService *FollowService) WriteDbRedis( peerUID PeerUID, lock *sync.RW
 	for  { // 处理关注
 		followUID := peerUID.FollowCnt.Pop()
 		log.Printf("用户[%d]关注 ->［%v］", uid, followUID)
-		if followUID == nil {
+		if peerUID.FollowCnt.Size() == 0 {
 			break
 		}
 		iFollowUID, ok := followUID.(int)
@@ -134,7 +134,7 @@ func (followService *FollowService) WriteDbRedis( peerUID PeerUID, lock *sync.RW
 
 	for { // 处理粉丝
 		fansUID := peerUID.FansCnt.Pop()
-		if fansUID == nil {
+		if peerUID.FansCnt.Size() == 0 {
 			break
 		}
 		iFansUID, ok := fansUID.(int)
@@ -151,7 +151,7 @@ func (followService *FollowService) WriteDbRedis( peerUID PeerUID, lock *sync.RW
 
 	for { // 处理好友
 		friendsUID := peerUID.FriendsCnt.Pop()
-		if friendsUID == nil {
+		if peerUID.FriendsCnt.Size() == 0 {
 			break
 		}
 		iFriendUID, ok := friendsUID.(int)
