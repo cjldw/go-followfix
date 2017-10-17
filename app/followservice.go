@@ -13,8 +13,6 @@ import (
 
 var followService *FollowService
 
-var produceCnt, consumerCnt int
-
 type FollowService struct {
 	excludeUIDSet      *set.Set
 	excludeAnchorIdSet *set.Set
@@ -35,7 +33,7 @@ var followOnce *sync.Once = &sync.Once{}
 func NewFollowService() *FollowService {
 	if followService == nil {
 		followOnce.Do(func() {
-			followService = &FollowService{set.New(), set.New(), &sync.RWMutex{}, make(chan PeerUID, 200000), make(chan bool)}
+			followService = &FollowService{set.New(), set.New(), &sync.RWMutex{}, make(chan PeerUID, 10), make(chan bool)}
 		})
 	}
 	return followService
@@ -64,43 +62,38 @@ func (followService *FollowService) Produce() {
 }
 
 func (followService *FollowService) Consumer() {
-	wg := &sync.WaitGroup{}
+	//wg := &sync.WaitGroup{}
 	lock := &sync.RWMutex{}
 
 	for peerUID := range followService.Traffic {
-		wg.Add(1)
-		go func() {
-			now := time.Now()
-			followService.WriteDbRedis(peerUID, lock)
-			WriteLog("/tmp/time.log", fmt.Sprintf("时间【%v】", time.Since(now)))
-			wg.Done()
-		}()
+		now := time.Now()
+		followService.WriteDbRedis(peerUID, lock)
+		WriteLog("/tmp/time.log", fmt.Sprintf("时间【%v】", time.Since(now)))
 	}
 	fmt.Println("for end")
-	wg.Wait()
+	//wg.Wait()
 	fmt.Println("wait end")
 	fmt.Println("------------consume end--------")
 	// wg.Wait()
 	log.Println("所有用户数据处理完毕")
-	fmt.Print(fmt.Sprintf("生成: %d, 消费: %d \n", produceCnt, consumerCnt))
-	/*
-		for {
-			select {
-			case boolValue := <-followService.ProduceEnd:
-				fmt.Println(boolValue)
-				break
-			case <-followService.Traffic:
-				//wg.Add(1)
-				go (func() {
-					now := time.Now()
-					followService.WriteDbRedis(peerUID, lock)
-					WriteLog("/tmp/time.log", fmt.Sprintf("时间【%v】", time.Since(now)))
-					wg.Done()
-				})()
-				fmt.Println("消费")
-			}
+/*
+	for {
+		select {
+		case boolValue := <-followService.ProduceEnd:
+			fmt.Println(boolValue)
+			break
+		case <-followService.Traffic:
+			//wg.Add(1)
+			go (func() {
+				now := time.Now()
+				followService.WriteDbRedis(peerUID, lock)
+				WriteLog("/tmp/time.log", fmt.Sprintf("时间【%v】", time.Since(now)))
+				wg.Done()
+			})()
+			fmt.Println("消费")
 		}
-	*/
+	}
+*/
 }
 
 // WriteDbRedis 将单个UID用户写入到Reids中, 更新数据库
@@ -148,11 +141,11 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID, lock *sync.RWM
 	//	WriteLog("/tmp/time.log", fmt.Sprintf("粉丝时间： %v", time.Since(now)))
 	// Fetch UID's Follow List And Storage To Social Redis
 	for { // 处理关注
+		followUID := peerUID.FollowCnt.Pop()
 		//		log.Printf("用户[%d]关注 ->［%v］\n", uid, followUID)
 		if peerUID.FollowCnt.Size() == 0 {
 			break
 		}
-		followUID := peerUID.FollowCnt.Pop()
 		iFollowUID, ok := followUID.(int)
 		if !ok {
 			continue
@@ -162,20 +155,16 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID, lock *sync.RWM
 			Score:  float64(followUIDFansCnt),
 			Member: followUID,
 		}
-		consumerCnt += 1
-		WriteLog("/tmp/rediskey.log", followListKey)
-		err := redisSocial.RedisClient.ZAdd(followListKey, item).Err()
-		if err != nil {
-			panic(err)
-		}
+		redisSocial.RedisClient.ZAdd(followListKey, item)
 	}
 
+	return
 	for { // 处理粉丝
+		fansUID := peerUID.FansCnt.Pop()
 		//		log.Printf("用户[%d]粉丝 ->［%v］\n", uid, fansUID)
 		if peerUID.FansCnt.Size() == 0 {
 			break
 		}
-		fansUID := peerUID.FansCnt.Pop()
 		iFansUID, ok := fansUID.(int)
 		if !ok {
 			continue
@@ -185,20 +174,15 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID, lock *sync.RWM
 			Score:  float64(fansUIDFansCnt),
 			Member: fansUID,
 		}
-		consumerCnt += 1
-		WriteLog("/tmp/rediskey.log", fansListKey)
-		err := redisSocial.RedisClient.ZAdd(fansListKey, item).Err()
-		if err != nil {
-			panic(err)
-		}
+		redisSocial.RedisClient.ZAdd(fansListKey, item)
 	}
 
 	for { // 处理好友
+		friendsUID := peerUID.FriendsCnt.Pop()
+		//		log.Printf("用户[%d]好有 ->［%v］\n", uid, friendsUID)
 		if peerUID.FriendsCnt.Size() == 0 {
 			break
 		}
-		friendsUID := peerUID.FriendsCnt.Pop()
-		//		log.Printf("用户[%d]好有 ->［%v］\n", uid, friendsUID)
 		iFriendUID, ok := friendsUID.(int)
 		if !ok {
 			continue
@@ -208,14 +192,8 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID, lock *sync.RWM
 			Score:  float64(friendsUIDFansCnt),
 			Member: friendsUID,
 		}
-		consumerCnt += 1
-		WriteLog("/tmp/rediskey.log", friendsListKey)
-		err := redisSocial.RedisClient.ZAdd(friendsListKey, item).Err()
-		if err != nil {
-			panic(err)
-		}
+		redisSocial.RedisClient.ZAdd(friendsListKey, item)
 	}
-
 
 }
 
@@ -291,13 +269,13 @@ func (followService *FollowService) processSplitTable(tablename string) {
 		uniqueUIDSet.Add(uid)
 		uniqueUIDSet.Add(anchor)
 	}
-	log.Printf("表共[%d] 个UID ", tablename, uniqueUIDSet.Size())
+	log.Printf("表 [%s] 共[%d] 个UID ", tablename, uniqueUIDSet.Size())
 	uidChan := make(chan int, 2000) // 10
 	for {
+		puid := uniqueUIDSet.Pop() // 14
 		if uniqueUIDSet.Size() == 0 {
 			break
 		}
-		puid := uniqueUIDSet.Pop() // 14
 		opuid := puid.(int)
 		uidChan <- opuid
 		go followService.CalculateUIDFollowFansCnt(opuid, uidChan)
@@ -353,7 +331,5 @@ func (followService *FollowService) CalculateUIDFollowFansCnt(uid int, uidChan c
 
 	peerUID := PeerUID{UID: uid, FollowCnt: followCntSet, FansCnt: fansCntSet, FriendsCnt: friendsCntSet}
 	followService.Traffic <- peerUID
-	produceCnt += 1
 	<-uidChan
 }
-
