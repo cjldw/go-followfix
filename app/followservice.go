@@ -160,10 +160,9 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID, lock *sync.RWM
 			Score:  float64(followUIDFansCnt),
 			Member: followUID,
 		}
-		consumeCnt += 1
 		redisSocial.RedisClient.ZAdd(followListKey, item)
 	}
-
+	consumeCnt += 1
 	return
 	for { // 处理粉丝
 		fansUID := peerUID.FansCnt.Pop()
