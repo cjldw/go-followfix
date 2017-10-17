@@ -277,17 +277,13 @@ func (followService *FollowService) processSplitTable(tablename string) {
 	log.Printf("表 [%s] 共[%d] 个UID ", tablename, uniqueUIDSet.Size())
 	uidChan := make(chan int, 2000) // 10
 	for {
-		puid := uniqueUIDSet.Pop() // 14
 		if uniqueUIDSet.Size() == 0 {
 			break
 		}
+		puid := uniqueUIDSet.Pop() // 14
 		opuid := puid.(int)
 		uidChan <- opuid
-		go followService.CalculateUIDFollowFansCnt(opuid, uidChan)
-	}
-	emptyChanCnt := cap(uidChan)
-	for i := 0; i < emptyChanCnt; i++ {
-		uidChan <- i
+		followService.CalculateUIDFollowFansCnt(opuid, uidChan)
 	}
 }
 
