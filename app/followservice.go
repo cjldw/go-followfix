@@ -273,6 +273,8 @@ func (followService *FollowService) processSplitTable(tablename string) {
 		// followService.excludeUIDSet.Add(uid) // record
 		// followService.excludeAnchorIdSet.Add(anchor)
 		uniqueUIDSet.Add(uid)
+		WriteLog("/tmp/uidList.log", fmt.Sprintf("%d\n", uid))
+		WriteLog("/tmp/uidList.log", fmt.Sprintf("%d\n", anchor))
 		uniqueUIDSet.Add(anchor)
 	}
 	log.Printf("表 [%s] 共[%d] 个UID ", tablename, uniqueUIDSet.Size())
