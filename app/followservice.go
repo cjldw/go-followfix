@@ -82,7 +82,7 @@ func (followService *FollowService) Consumer() {
 	fmt.Println("------------consume end--------")
 	// wg.Wait()
 	log.Println("所有用户数据处理完毕")
-	fmt.Print(fmt.Sprintf("生成: %d, 消费: %d", produceCnt, consumerCnt))
+	fmt.Print(fmt.Sprintf("生成: %d, 消费: %d \n", produceCnt, consumerCnt))
 	/*
 		for {
 			select {
@@ -113,7 +113,6 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID, lock *sync.RWM
 
 	// lock.Lock()
 	// defer lock.Unlock()
-	consumerCnt += 1
 	log.Printf("Write to [%d] to redis", uid)
 
 	/*
@@ -210,6 +209,8 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID, lock *sync.RWM
 			panic(err)
 		}
 	}
+
+	consumerCnt += 1
 
 }
 
