@@ -29,7 +29,7 @@ type PeerUID struct {
 }
 
 
-var produceCnt, consumeCnt int
+var produceCnt, consumeCnt, writeRedisCnt int
 
 
 var followOnce *sync.Once = &sync.Once{}
@@ -80,7 +80,7 @@ func (followService *FollowService) Consumer() {
 	fmt.Println("------------consume end--------")
 	// wg.Wait()
 	log.Println("所有用户数据处理完毕")
-	fmt.Println(fmt.Sprintf("生产：　%d  消费:  %d", produceCnt, consumeCnt))
+	fmt.Println(fmt.Sprintf("生产：　%d  消费:  %d 写redis: %d", produceCnt, consumeCnt, writeRedisCnt))
 /*
 	for {
 		select {
@@ -160,6 +160,7 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID, lock *sync.RWM
 			Score:  float64(followUIDFansCnt),
 			Member: followUID,
 		}
+		writeRedisCnt += 1
 		redisSocial.RedisClient.ZAdd(followListKey, item)
 	}
 	consumeCnt += 1
