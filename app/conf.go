@@ -18,6 +18,8 @@ type AppConf struct {
 type DbInst struct {
 	Driver string
 	Dsn string
+	MaxOpenConns int
+	MaxIdleConns int
 }
 
 // redis instance configure

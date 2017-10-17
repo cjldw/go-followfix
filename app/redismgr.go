@@ -48,8 +48,6 @@ func (RedisMgr *RedisMgr) InitializeRedisList (redisConfMap map[string]RedisInst
 // GetRedisInstByName
 // get redis instance by redis configure
 func (redisMgr *RedisMgr) GetRedisByName(redisKey string) (*RedisMgr , error) {
-	redisMgr.Lock.Lock()
-	defer redisMgr.Lock.Unlock()
 	redisClient, ok := redisList[redisKey]
 	if !ok {
 		return nil, errors.New(fmt.Sprintf("Redis Key 【%s】not exists！", redisKey))

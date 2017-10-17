@@ -50,6 +50,12 @@ func (followService *FollowService) Produce() {
 		})()
 	}
 	wg.Wait()
+
+	trafficChanStock := cap(followService.Traffic)
+	// 确保Traffic通道中的数据都消费完毕
+	for i := 0; i < trafficChanStock ; i++  {
+		followService.Traffic <- PeerUID{UID:0, FansCnt:0, FollowCnt:0, FriendsCnt:0}
+	}
 	followService.ProduceEnd <- true
 }
 
@@ -77,6 +83,9 @@ func (followService *FollowService) Consumer() {
 // WriteDbRedis 将单个UID用户写入到Reids中, 更新数据库
 func (followService *FollowService) WriteDbRedis(peerUID PeerUID, lock *sync.RWMutex) {
 	uid := peerUID.UID
+	if uid == 0 {
+		return
+	}
 	// fansCnt := peerUID.FansCnt.Size()
 
 	// lock.Lock()
@@ -193,7 +202,6 @@ func getUIDFansCnt(uid int) int {
 	dbUserData, err := GetApp().dbmgr.GetDbByName(DB_USERS_DATA)
 	CheckErr(err)
 	var fansCnt, fragmentCnt int
-	now := time.Now()
 	for index := 0; index < USER_FOLLOW_SPLIT_TABLE_NUM; index++ {
 		sql = fmt.Sprintf("select count(*) as fansCnt from user_follow_%d where anchor = %d and status = 1 "+
 			"and isFriends = 0", index, uid)

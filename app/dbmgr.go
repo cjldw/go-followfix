@@ -34,8 +34,8 @@ func (dbMgr *DbMgr) InitializeDbList(dbConfig map[string]DbInst)  {
 		if ok { continue }
 		log.Printf("initialize dbconnection %s \n", dbKey)
 		dbClient, err := sql.Open(dbConf.Driver, dbConf.Dsn)
-		dbClient.SetMaxOpenConns(500)
-		dbClient.SetMaxIdleConns(400)
+		dbClient.SetMaxOpenConns(dbConf.MaxIdleConns)
+		dbClient.SetMaxIdleConns(dbConf.MaxIdleConns)
 		ThrowErr(err)
 		dbList[dbKey] = dbClient
 	}
