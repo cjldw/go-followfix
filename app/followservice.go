@@ -47,6 +47,7 @@ func (followService *FollowService) Produce() {
 	wg := &sync.WaitGroup{}
 	for table := 0; table < 1; table++ {
 		tablename := USER_FOLLOW_TABLE_PREFIX + strconv.Itoa(table)
+		fmt.Println(tablename)
 		wg.Add(1)
 		go (func() {
 			followService.processSplitTable(tablename)
@@ -146,6 +147,7 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID, lock *sync.RWM
 	//log.Printf("PEEUID对象信息 :%v\n", peerUID)
 	//	WriteLog("/tmp/time.log", fmt.Sprintf("粉丝时间： %v", time.Since(now)))
 	// Fetch UID's Follow List And Storage To Social Redis
+	WriteLog("/tmp/uid_follow_list.log", fmt.Sprintf("%v", peerUID.FollowCnt.List()))
 	for { // 处理关注
 		//		log.Printf("用户[%d]关注 ->［%v］\n", uid, followUID)
 		if peerUID.FollowCnt.Size() == 0 {
@@ -244,6 +246,7 @@ func (followService *FollowService) processSplitTable(tablename string) {
 	dbUsersData, err := GetApp().dbmgr.GetDbByName(DB_USERS_DATA)
 	CheckErr(err)
 	sql := fmt.Sprintf("select uid, anchor from %s where isAnchor = 1 and isFriends = 0 and status = 1 limit 5", tablename)
+	fmt.Println(sql)
 	/*
 		if !followService.excludeUIDSet.IsEmpty() { // exclude has process uid
 			uidList1 := followService.excludeUIDSet.List()
@@ -264,7 +267,6 @@ func (followService *FollowService) processSplitTable(tablename string) {
 			sql += fmt.Sprintf(" and anchor not in (%s)", strings.Join(anchorIdList2, ","))
 		}
 	*/
-	log.Println(sql)
 	dbRows, err := dbUsersData.Db.Query(sql)
 	defer dbRows.Close()
 	CheckErr(err)
@@ -274,6 +276,7 @@ func (followService *FollowService) processSplitTable(tablename string) {
 		dbRows.Scan(&uid, &anchor)
 		// followService.excludeUIDSet.Add(uid) // record
 		// followService.excludeAnchorIdSet.Add(anchor)
+		WriteLog("/tmp/produceUID", fmt.Sprintf("%d, %d", uid, anchor))
 		uniqueUIDSet.Add(uid)
 		uniqueUIDSet.Add(anchor)
 	}
@@ -300,7 +303,7 @@ func (followService *FollowService) CalculateUIDFollowFansCnt(uid int, uidChan c
 	fansCntSet := set.New()
 	friendsCntSet := set.New()
 	var followSql, fansSql, tablename string
-	var anchor, friendsCnt int
+	var followAnchor, fansAnchor, friendsCnt int
 	for index := 0; index < 10; index++ {
 		tablename = USER_FOLLOW_TABLE_PREFIX + strconv.Itoa(index)
 		followSql = fmt.Sprintf("select anchor from %s where uid = %d and isFriends = 0 and status = 1", tablename, uid)
@@ -308,9 +311,9 @@ func (followService *FollowService) CalculateUIDFollowFansCnt(uid int, uidChan c
 		followRows, err := dbUsersData.Db.Query(followSql)
 		CheckErr(err)
 		for followRows.Next() {
-			followRows.Scan(&anchor)
-			followCntSet.Add(anchor)
-			WriteLog("/tmp/produce_follow_uid.log", fmt.Sprintf("%v", anchor))
+			followRows.Scan(&followAnchor)
+			followCntSet.Add(followAnchor)
+			WriteLog("/tmp/produce_follow_uid.log", fmt.Sprintf("%v", followAnchor))
 		}
 		followRows.Close()
 
@@ -319,8 +322,8 @@ func (followService *FollowService) CalculateUIDFollowFansCnt(uid int, uidChan c
 		fansRows, err := dbUsersData.Db.Query(fansSql)
 		CheckErr(err)
 		for fansRows.Next() {
-			fansRows.Scan(&anchor)
-			fansCntSet.Add(anchor)
+			fansRows.Scan(&fansAnchor)
+			fansCntSet.Add(fansAnchor)
 		}
 		fansRows.Close()
 
