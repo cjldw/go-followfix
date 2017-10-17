@@ -81,7 +81,7 @@ func WriteLog(dir, line string) {
 	defer f.Close()
 	w := bufio.NewWriter(f) //创建新的 Writer 对象
 	//t := time.Now().Format("2006-01-02 15:04:05")
-	_, err = w.WriteString(/*t + ":"*/ + line + "\n")
+	_, err = w.WriteString(/*t + ":"+ */ line + "\n")
 	if err != nil {
 		panic(err)
 	}
