@@ -186,7 +186,7 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID, lock *sync.RWM
 			Member: fansUID,
 		}
 		consumerCnt += 1
-		WriteLog("/tmp/rediskey.log", followListKey)
+		WriteLog("/tmp/rediskey.log", fansListKey)
 		err := redisSocial.RedisClient.ZAdd(fansListKey, item).Err()
 		if err != nil {
 			panic(err)
@@ -209,7 +209,7 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID, lock *sync.RWM
 			Member: friendsUID,
 		}
 		consumerCnt += 1
-		WriteLog("/tmp/rediskey.log", followListKey)
+		WriteLog("/tmp/rediskey.log", friendsListKey)
 		err := redisSocial.RedisClient.ZAdd(friendsListKey, item).Err()
 		if err != nil {
 			panic(err)
