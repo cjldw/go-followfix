@@ -54,7 +54,7 @@ func (followService *FollowService) Produce() {
 	trafficChanStock := cap(followService.Traffic)
 	// 确保Traffic通道中的数据都消费完毕
 	for i := 0; i < trafficChanStock ; i++  {
-		followService.Traffic <- PeerUID{UID:0, FansCnt:0, FollowCnt:0, FriendsCnt:0}
+		followService.Traffic <- PeerUID{UID:0}
 	}
 	followService.ProduceEnd <- true
 }
