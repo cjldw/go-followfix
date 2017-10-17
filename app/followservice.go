@@ -28,6 +28,10 @@ type PeerUID struct {
 	FriendsCnt *set.Set
 }
 
+
+var produceCnt, consumeCnt int
+
+
 var followOnce *sync.Once = &sync.Once{}
 
 func NewFollowService() *FollowService {
@@ -76,6 +80,7 @@ func (followService *FollowService) Consumer() {
 	fmt.Println("------------consume end--------")
 	// wg.Wait()
 	log.Println("所有用户数据处理完毕")
+	fmt.Println(fmt.Sprintf("生产：　%d  消费:  %d", produceCnt, consumeCnt))
 /*
 	for {
 		select {
@@ -155,6 +160,7 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID, lock *sync.RWM
 			Score:  float64(followUIDFansCnt),
 			Member: followUID,
 		}
+		consumeCnt += 1
 		redisSocial.RedisClient.ZAdd(followListKey, item)
 	}
 
@@ -331,5 +337,6 @@ func (followService *FollowService) CalculateUIDFollowFansCnt(uid int, uidChan c
 
 	peerUID := PeerUID{UID: uid, FollowCnt: followCntSet, FansCnt: fansCntSet, FriendsCnt: friendsCntSet}
 	followService.Traffic <- peerUID
+	produceCnt += 1
 	<-uidChan
 }
