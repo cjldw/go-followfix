@@ -218,7 +218,7 @@ func getUIDFansCnt(uid int) int {
 func (followService *FollowService) processSplitTable(tablename string) {
 	dbUsersData, err := GetApp().dbmgr.GetDbByName(DB_USERS_DATA)
 	CheckErr(err)
-	sql := fmt.Sprintf("select uid, anchor from %s where isFriends = 0 and status = 1", tablename)
+	sql := fmt.Sprintf("select uid, anchor from %s where isAnchor = 1 and isFriends = 0 and status = 1", tablename)
 	/*
 		if !followService.excludeUIDSet.IsEmpty() { // exclude has process uid
 			uidList1 := followService.excludeUIDSet.List()
