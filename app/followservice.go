@@ -45,7 +45,7 @@ func NewFollowService() *FollowService {
 
 func (followService *FollowService) Produce() {
 	wg := &sync.WaitGroup{}
-	for table := 0; table < USER_FOLLOW_SPLIT_TABLE_NUM; table++ {
+	for table := 0; table < 1; table++ {
 		tablename := USER_FOLLOW_TABLE_PREFIX + strconv.Itoa(table)
 		wg.Add(1)
 		go (func() {
@@ -146,17 +146,17 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID, lock *sync.RWM
 	//log.Printf("PEEUID对象信息 :%v\n", peerUID)
 	//	WriteLog("/tmp/time.log", fmt.Sprintf("粉丝时间： %v", time.Since(now)))
 	// Fetch UID's Follow List And Storage To Social Redis
-	WriteLog("/tmp/uid_follow.log", fmt.Sprintf("%v", peerUID.FollowCnt))
 	for { // 处理关注
-		followUID := peerUID.FollowCnt.Pop()
 		//		log.Printf("用户[%d]关注 ->［%v］\n", uid, followUID)
 		if peerUID.FollowCnt.Size() == 0 {
 			break
 		}
+		followUID := peerUID.FollowCnt.Pop()
 		iFollowUID, ok := followUID.(int)
 		if !ok {
 			continue
 		}
+		WriteLog("/tmp/uid_follow.log", fmt.Sprintf("%v", iFollowUID))
 		followUIDFansCnt := getUIDFansCnt(iFollowUID)
 		item := redis.Z{
 			Score:  float64(followUIDFansCnt),
@@ -168,11 +168,11 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID, lock *sync.RWM
 	consumeCnt += 1
 	return
 	for { // 处理粉丝
-		fansUID := peerUID.FansCnt.Pop()
 		//		log.Printf("用户[%d]粉丝 ->［%v］\n", uid, fansUID)
 		if peerUID.FansCnt.Size() == 0 {
 			break
 		}
+		fansUID := peerUID.FansCnt.Pop()
 		iFansUID, ok := fansUID.(int)
 		if !ok {
 			continue
@@ -186,11 +186,11 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID, lock *sync.RWM
 	}
 
 	for { // 处理好友
-		friendsUID := peerUID.FriendsCnt.Pop()
 		//		log.Printf("用户[%d]好有 ->［%v］\n", uid, friendsUID)
 		if peerUID.FriendsCnt.Size() == 0 {
 			break
 		}
+		friendsUID := peerUID.FriendsCnt.Pop()
 		iFriendUID, ok := friendsUID.(int)
 		if !ok {
 			continue
@@ -310,6 +310,7 @@ func (followService *FollowService) CalculateUIDFollowFansCnt(uid int, uidChan c
 		for followRows.Next() {
 			followRows.Scan(&anchor)
 			followCntSet.Add(anchor)
+			WriteLog("/tmp/produce_follow_uid.log", fmt.Sprintf("%v", anchor))
 		}
 		followRows.Close()
 
