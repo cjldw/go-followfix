@@ -5,6 +5,8 @@ import (
 	"sync"
 	"github.com/go-redis/redis"
 	"errors"
+	"fmt"
+	"time"
 )
 
 func TestFollowService_Produce(t *testing.T) {
@@ -63,6 +65,22 @@ func TestHashGet(t *testing.T)  {
 
 func TestGetUIDFansCnt(t *testing.T)  {
 
-	fans150cnt := getUIDFansCnt(21548699)
-	t.Log(fans150cnt)
+	demo := make(chan int, 10)
+	wg := &sync.WaitGroup{}
+	go func() {
+		for item := range demo {
+			wg.Add(1)
+			time.Sleep(2 * time.Second)
+			fmt.Println(item)
+			wg.Done()
+
+		}
+	}()
+	for i := 0 ; i < 10 ; i++  {
+		demo <- i
+	}
+
+	wg.Wait()
+
+	t.Log("-----------------")
 }

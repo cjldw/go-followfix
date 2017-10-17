@@ -51,33 +51,53 @@ func (followService *FollowService) Produce() {
 	}
 	wg.Wait()
 
-	trafficChanStock := cap(followService.Traffic)
+	trafficChanStock := 10 // cap(followService.Traffic)
 	// 确保Traffic通道中的数据都消费完毕
 	for i := 0; i < trafficChanStock ; i++  {
 		followService.Traffic <- PeerUID{UID:0}
 	}
-	followService.ProduceEnd <- true
+	fmt.Println("------produce ok1--------------")
+	close(followService.Traffic)
+	fmt.Println("------produce ok2--------------")
 }
 
 func (followService *FollowService) Consumer() {
 	wg := &sync.WaitGroup{}
 	lock := &sync.RWMutex{}
-	for {
-		select {
-		case <-followService.ProduceEnd:
-			break
-		case peerUID := <-followService.Traffic:
-			wg.Add(1)
-			go (func() {
-				now := time.Now()
-				followService.WriteDbRedis(peerUID, lock)
-				WriteLog("/tmp/time.log", fmt.Sprintf("时间【%v】", time.Since(now)))
-				wg.Done()
-			})()
-		}
+
+	for peerUID := range followService.Traffic {
+		wg.Add(1)
+		go func() {
+			now := time.Now()
+			followService.WriteDbRedis(peerUID, lock)
+			WriteLog("/tmp/time.log", fmt.Sprintf("时间【%v】", time.Since(now)))
+			wg.Done()
+		}()
 	}
+	fmt.Println("for end")
 	wg.Wait()
+	fmt.Println("wait end")
+	fmt.Println("------------consume end--------")
+	// wg.Wait()
 	log.Println("所有用户数据处理完毕")
+	/*
+		for {
+			select {
+			case boolValue := <-followService.ProduceEnd:
+				fmt.Println(boolValue)
+				break
+			case <-followService.Traffic:
+				//wg.Add(1)
+				go (func() {
+					now := time.Now()
+					followService.WriteDbRedis(peerUID, lock)
+					WriteLog("/tmp/time.log", fmt.Sprintf("时间【%v】", time.Since(now)))
+					wg.Done()
+				})()
+				fmt.Println("消费")
+			}
+		}
+	*/
 }
 
 // WriteDbRedis 将单个UID用户写入到Reids中, 更新数据库
@@ -121,7 +141,7 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID, lock *sync.RWM
 	var fansListKey string = fmt.Sprintf("%s%d", FRIEND_SYSTEM_USER_FANS, uid)
 	var friendsListKey string = fmt.Sprintf("%s%d", FRIEND_SYSTEM_USER_FRIENDS, uid)
 
-	log.Printf("PEEUID对象信息 :%v\n", peerUID)
+	//log.Printf("PEEUID对象信息 :%v\n", peerUID)
 	//	WriteLog("/tmp/time.log", fmt.Sprintf("粉丝时间： %v", time.Since(now)))
 	// Fetch UID's Follow List And Storage To Social Redis
 	for { // 处理关注
@@ -139,7 +159,10 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID, lock *sync.RWM
 			Score:  float64(followUIDFansCnt),
 			Member: followUID,
 		}
-		redisSocial.RedisClient.ZAdd(followListKey, item)
+		err := redisSocial.RedisClient.ZAdd(followListKey, item).Err()
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	for { // 处理粉丝
@@ -157,7 +180,10 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID, lock *sync.RWM
 			Score:  float64(fansUIDFansCnt),
 			Member: fansUID,
 		}
-		redisSocial.RedisClient.ZAdd(fansListKey, item)
+		err := redisSocial.RedisClient.ZAdd(fansListKey, item).Err()
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	for { // 处理好友
@@ -175,7 +201,10 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID, lock *sync.RWM
 			Score:  float64(friendsUIDFansCnt),
 			Member: friendsUID,
 		}
-		redisSocial.RedisClient.ZAdd(friendsListKey, item)
+		err := redisSocial.RedisClient.ZAdd(friendsListKey, item).Err()
+		if err != nil {
+			panic(err)
+		}
 	}
 
 }
@@ -187,7 +216,7 @@ func getUIDFansCnt(uid int) int {
 	redisSocial, err := GetApp().redismgr.GetRedisByName(REDIS_SOCIAL)
 	CheckErr(err)
 	fansCntKey := fmt.Sprintf("id_%d_fanscnt", uid)
-	log.Println(fansCntKey)
+	//log.Println(fansCntKey)
 	sFansCnt, err := redisSocial.RedisClient.HGet(TMP_UID_FANS_NUM, fansCntKey).Result()
 	if err == nil {
 		iFansCnt, err := strconv.Atoi(sFansCnt)
@@ -218,7 +247,7 @@ func getUIDFansCnt(uid int) int {
 func (followService *FollowService) processSplitTable(tablename string) {
 	dbUsersData, err := GetApp().dbmgr.GetDbByName(DB_USERS_DATA)
 	CheckErr(err)
-	sql := fmt.Sprintf("select uid, anchor from %s where isAnchor = 1 and isFriends = 0 and status = 1", tablename)
+	sql := fmt.Sprintf("select uid, anchor from %s where isAnchor = 1 and isFriends = 0 and status = 1 limit 5", tablename)
 	/*
 		if !followService.excludeUIDSet.IsEmpty() { // exclude has process uid
 			uidList1 := followService.excludeUIDSet.List()
@@ -316,3 +345,4 @@ func (followService *FollowService) CalculateUIDFollowFansCnt(uid int, uidChan c
 	followService.Traffic <- peerUID
 	<-uidChan
 }
+
