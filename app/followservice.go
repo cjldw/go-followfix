@@ -13,6 +13,8 @@ import (
 
 var followService *FollowService
 
+var produceCnt, consumerCnt int
+
 type FollowService struct {
 	excludeUIDSet      *set.Set
 	excludeAnchorIdSet *set.Set
@@ -80,6 +82,7 @@ func (followService *FollowService) Consumer() {
 	fmt.Println("------------consume end--------")
 	// wg.Wait()
 	log.Println("所有用户数据处理完毕")
+	fmt.Print(fmt.Sprintf("生成: %d, 消费: %d", produceCnt, consumerCnt))
 	/*
 		for {
 			select {
@@ -110,6 +113,7 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID, lock *sync.RWM
 
 	// lock.Lock()
 	// defer lock.Unlock()
+	consumerCnt += 1
 	log.Printf("Write to [%d] to redis", uid)
 
 	/*
@@ -281,7 +285,7 @@ func (followService *FollowService) processSplitTable(tablename string) {
 		uniqueUIDSet.Add(uid)
 		uniqueUIDSet.Add(anchor)
 	}
-	log.Printf("表 [%s] 共[%d] 个UID ", tablename, uniqueUIDSet.Size())
+	log.Printf("表共[%d] 个UID ", tablename, uniqueUIDSet.Size())
 	uidChan := make(chan int, 2000) // 10
 	for {
 		puid := uniqueUIDSet.Pop() // 14
@@ -343,6 +347,7 @@ func (followService *FollowService) CalculateUIDFollowFansCnt(uid int, uidChan c
 
 	peerUID := PeerUID{UID: uid, FollowCnt: followCntSet, FansCnt: fansCntSet, FriendsCnt: friendsCntSet}
 	followService.Traffic <- peerUID
+	produceCnt += 1
 	<-uidChan
 }
 
