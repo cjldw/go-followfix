@@ -70,6 +70,7 @@ func (followService *FollowService) Consumer() {
 	lock := &sync.RWMutex{}
 
 	for peerUID := range followService.Traffic {
+		WriteLog("/tmp/consume_uid.log", fmt.Sprintf("%v", peerUID))
 		now := time.Now()
 		followService.WriteDbRedis(peerUID, lock)
 		WriteLog("/tmp/time.log", fmt.Sprintf("时间【%v】", time.Since(now)))
@@ -145,6 +146,7 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID, lock *sync.RWM
 	//log.Printf("PEEUID对象信息 :%v\n", peerUID)
 	//	WriteLog("/tmp/time.log", fmt.Sprintf("粉丝时间： %v", time.Since(now)))
 	// Fetch UID's Follow List And Storage To Social Redis
+	WriteLog("/tmp/uid_follow.log", fmt.Sprintf("%v", peerUID.FollowCnt))
 	for { // 处理关注
 		followUID := peerUID.FollowCnt.Pop()
 		//		log.Printf("用户[%d]关注 ->［%v］\n", uid, followUID)
@@ -266,18 +268,17 @@ func (followService *FollowService) processSplitTable(tablename string) {
 	dbRows, err := dbUsersData.Db.Query(sql)
 	defer dbRows.Close()
 	CheckErr(err)
-	uniqueUIDSet := set.NewNonTS()
+	uniqueUIDSet := set.New()
 	var uid, anchor int
 	for dbRows.Next() {
 		dbRows.Scan(&uid, &anchor)
 		// followService.excludeUIDSet.Add(uid) // record
 		// followService.excludeAnchorIdSet.Add(anchor)
 		uniqueUIDSet.Add(uid)
-		WriteLog("/tmp/uidList.log", fmt.Sprintf("%d\n", uid))
-		WriteLog("/tmp/uidList.log", fmt.Sprintf("%d\n", anchor))
 		uniqueUIDSet.Add(anchor)
 	}
-	log.Printf("表 [%s] 共[%d] 个UID ", tablename, uniqueUIDSet.Size())
+	fmt.Printf("表 [%s] 共[%d] 个UID ", tablename, uniqueUIDSet.Size())
+	WriteLog("/tmp/uidlist.log", fmt.Sprintf("%v", uniqueUIDSet))
 	uidChan := make(chan int, 2000) // 10
 	for {
 		if uniqueUIDSet.Size() == 0 {
@@ -334,6 +335,7 @@ func (followService *FollowService) CalculateUIDFollowFansCnt(uid int, uidChan c
 	}
 
 	peerUID := PeerUID{UID: uid, FollowCnt: followCntSet, FansCnt: fansCntSet, FriendsCnt: friendsCntSet}
+	WriteLog("/tmp/peeuid.log", fmt.Sprintf("%v", peerUID))
 	followService.Traffic <- peerUID
 	produceCnt += 1
 	<-uidChan
