@@ -248,7 +248,7 @@ func (followService *FollowService) processSplitTable(tableName string) {
 			break
 		}
 		for _, value := range uniqueUIDSet {
-			WriteLog("d:/test2.log", fmt.Sprintf("%d", value))
+			WriteLog("d:/test3.log", fmt.Sprintf("%d", value))
 			delete(uniqueUIDSet, value)
 		}
 	}

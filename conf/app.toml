@@ -3,7 +3,11 @@ version = "1.0"
 [dbConf]
 [dbConf.users_data]
 driver = "mysql"
-dsn = "root:111111@tcp(127.0.0.1:3306)/luowen?charset=utf8"
+dsn = "root:111111@tcp(127.0.0.1:3306)/users_data?charset=utf8"
+# 最大连接数
+maxOpenConns = 500
+# 最大空闲连接数
+maxIdleConns = 300
 
 [redisConf]
 [redisConf.social]
@@ -12,6 +16,4 @@ password = ""
 port = 6379
 db = 0
 socket = ""
-
-
 
