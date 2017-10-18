@@ -41,7 +41,7 @@ func NewFollowService() *FollowService {
 
 func (followService *FollowService) Produce() {
 	wg := &sync.WaitGroup{}
-	for table := 0; table < 1; table++ {
+	for table := 0; table < USER_FOLLOW_SPLIT_TABLE_NUM; table++ {
 		tablename := USER_FOLLOW_TABLE_PREFIX + strconv.Itoa(table)
 		wg.Add(1)
 		go (func() {
@@ -257,7 +257,7 @@ func (followService *FollowService) CalculateUIDFollowFansCnt(inputChan <-chan i
 		fansCntSet := set.New()
 		friendsCntSet := set.New()
 
-		for index := 0; index < 10; index++ {
+		for index := 0; index < USER_FOLLOW_SPLIT_TABLE_NUM; index++ {
 			tablename = USER_FOLLOW_TABLE_PREFIX + strconv.Itoa(index)
 			followSql = fmt.Sprintf("select anchor from %s where uid = %d and isFriends = 0 and status = 1", tablename, uId)
 			//log.Println(followSql)
