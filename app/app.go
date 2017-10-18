@@ -51,7 +51,7 @@ func (app *App) Run()  {
 	wg := &sync.WaitGroup{}
 	followService := NewFollowService()
 	RunAsync(wg, followService.Produce)
-	RunAsync(wg, followService.Consumer)
+	//RunAsync(wg, followService.Consumer)
 	wg.Wait()
 }
 

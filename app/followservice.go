@@ -5,27 +5,25 @@ import (
 	"log"
 	"strconv"
 	"sync"
-	"github.com/go-redis/redis"
-	set "gopkg.in/fatih/set.v0"
+	//"github.com/go-redis/redis"
 	//"os"
-	"time"
+	//"time"
 )
 
 var followService *FollowService
 
 type FollowService struct {
-	excludeUIDSet      *set.Set
-	excludeAnchorIdSet *set.Set
+	excludeUIDSet      map[int]int
+	excludeAnchorIdSet map[int]int
 	Lock               *sync.RWMutex
 	Traffic            chan PeerUID
-	ProduceEnd         chan bool
 }
 
 type PeerUID struct {
 	UID        int
-	FollowCnt  *set.Set
-	FansCnt    *set.Set
-	FriendsCnt *set.Set
+	FollowCnt  map[int]int
+	FansCnt    map[int]int
+	FriendsCnt map[int]int
 }
 
 var followOnce *sync.Once = &sync.Once{}
@@ -33,7 +31,12 @@ var followOnce *sync.Once = &sync.Once{}
 func NewFollowService() *FollowService {
 	if followService == nil {
 		followOnce.Do(func() {
-			followService = &FollowService{set.New(), set.New(), &sync.RWMutex{}, make(chan PeerUID, 10), make(chan bool)}
+			followService = &FollowService{
+				excludeUIDSet: make(map[int]int),
+				excludeAnchorIdSet: make(map[int]int),
+				Lock: &sync.RWMutex{},
+				Traffic: make(chan PeerUID, 1000),
+			}
 		})
 	}
 	return followService
@@ -42,10 +45,10 @@ func NewFollowService() *FollowService {
 func (followService *FollowService) Produce() {
 	wg := &sync.WaitGroup{}
 	for table := 0; table < USER_FOLLOW_SPLIT_TABLE_NUM; table++ {
-		tablename := USER_FOLLOW_TABLE_PREFIX + strconv.Itoa(table)
+		tableName := USER_FOLLOW_TABLE_PREFIX + strconv.Itoa(table)
 		wg.Add(1)
 		go (func() {
-			followService.processSplitTable(tablename)
+			followService.processSplitTable(tableName)
 			wg.Done()
 		})()
 	}
@@ -59,13 +62,14 @@ func (followService *FollowService) Consumer() {
 	for peerUID := range followService.Traffic {
 		valve <- peerUID
 		go func() {
-			followService.WriteDbRedis(peerUID, valve)
+			//followService.WriteDbRedis(peerUID, valve)
 		}()
 	}
 	log.Println("所有用户数据处理完毕")
 }
 
 // WriteDbRedis 将单个UID用户写入到Reids中, 更新数据库
+/*
 func (followService *FollowService) WriteDbRedis(peerUID PeerUID, valve <-chan PeerUID) {
 	uId := peerUID.UID
 	redisSocial, err := GetApp().redismgr.GetRedisByName(REDIS_SOCIAL)
@@ -167,82 +171,6 @@ func getUIDFansCnt(uid int) int {
 	return fansCnt
 }
 
-// processSplitTable 处理分表数据
-func (followService *FollowService) processSplitTable(tablename string) {
-	dbUsersData, err := GetApp().dbmgr.GetDbByName(DB_USERS_DATA)
-	CheckErr(err)
-	sql := fmt.Sprintf("select uid, anchor from %s where  status = 1 and isFriends = 0 and isAnchor = 1", tablename)
-	/*
-		if !followService.excludeUIDSet.IsEmpty() { // exclude has process uid
-			uidList1 := followService.excludeUIDSet.List()
-			uidList2 := make([]string, len(uidList1))
-			for index := range uidList1 {
-				uidList2[index] = strconv.Itoa(uidList1[index].(int))
-			}
-			//sql = fmt.Sprintf("%s and uid not in (%s)", sql, strings.Join(uidList2, ","))
-			sql += fmt.Sprintf(" and uid not in (%s)", strings.Join(uidList2, ","))
-		}
-		if !followService.excludeAnchorIdSet.IsEmpty() { // exclude has process anchor
-
-			anchorIdList := followService.excludeAnchorIdSet.List()
-			anchorIdList2 := make([]string, len(anchorIdList))
-			for index := range anchorIdList {
-				anchorIdList2[index] = strconv.Itoa(anchorIdList[index].(int))
-			}
-			sql += fmt.Sprintf(" and anchor not in (%s)", strings.Join(anchorIdList2, ","))
-		}
-	*/
-	fmt.Println(sql)
-	dbRows, err := dbUsersData.Db.Query(sql)
-	defer dbRows.Close()
-	CheckErr(err)
-	uniqueUIDSet := set.New()
-	for dbRows.Next() {
-		var uid, anchor int
-		dbRows.Scan(&uid, &anchor)
-		// followService.excludeUIDSet.Add(uid) // record
-		// followService.excludeAnchorIdSet.Add(anchor)
-		//WriteLog("/tmp/produceUID", fmt.Sprintf("%d, %d", uid, anchor))
-		uniqueUIDSet.Add(uid)
-		uniqueUIDSet.Add(anchor)
-	}
-	fmt.Printf("表 [%s] 共[%d] 个UID \n", tablename, uniqueUIDSet.Size())
-
-	// 限制最大goroutine数量
-	waitGroup := &sync.WaitGroup{}
-	waitGroup.Add(PROCESS_UID_VAVEL)
-	outputChan := make(chan PeerUID, PROCESS_UID_VAVEL)
-	inputChan := make(chan int, PROCESS_UID_VAVEL)
-	go func() {
-		for  {
-			if uniqueUIDSet.Size() == 0 {
-				close(inputChan)
-				break
-			}
-			uId, ok := uniqueUIDSet.Pop().(int)
-			if !ok {
-				continue
-			}
-			inputChan <- uId
-		}
-	}()
-	for i := 0; i < PROCESS_UID_VAVEL ; i++ {
-		go func() {
-			followService.CalculateUIDFollowFansCnt(inputChan, outputChan)
-			waitGroup.Done()
-		}()
-	}
-
-	go func() {
-		waitGroup.Wait()
-		close(outputChan)
-	}()
-
-	for peerUID := range outputChan {
-		followService.Traffic <- peerUID
-	}
-}
-
 // CalculateUIDFollowFansCnt 计算单个UID的粉丝数, 关注数, 存放到集合中
 func (followService *FollowService) CalculateUIDFollowFansCnt(inputChan <-chan int, outputChan chan <- PeerUID) {
 	for uId := range inputChan{
@@ -292,3 +220,75 @@ func (followService *FollowService) CalculateUIDFollowFansCnt(inputChan <-chan i
 		fmt.Println(peerUID)
 	}
 }
+*/
+
+// processSplitTable 处理分表数据
+func (followService *FollowService) processSplitTable(tableName string) {
+	dbUsersData, err := GetApp().dbmgr.GetDbByName(DB_USERS_DATA)
+	CheckErr(err)
+	sql := fmt.Sprintf("select uid, anchor from %s where  status = 1 and isFriends = 0 and isAnchor = 1", tableName)
+	fmt.Println(sql)
+	dbRows, err := dbUsersData.Db.Query(sql)
+	defer dbRows.Close()
+	CheckErr(err)
+	uniqueUIDSet := map[int]int{}
+	for dbRows.Next() {
+		var uid, anchor int
+		dbRows.Scan(&uid, &anchor)
+		// followService.excludeUIDSet.Add(uid) // record
+		// followService.excludeAnchorIdSet.Add(anchor)
+		//WriteLog("/tmp/produceUID", fmt.Sprintf("%d, %d", uid, anchor))
+		uniqueUIDSet[uid] = uid
+		uniqueUIDSet[anchor] = anchor
+	}
+	fmt.Printf("表 [%s] 共[%d] 个UID \n", tableName, len(uniqueUIDSet))
+
+	for  {
+		if len(uniqueUIDSet) == 0 {
+			break
+		}
+		for _, value := range uniqueUIDSet {
+			WriteLog("d:/test2.log", fmt.Sprintf("%d", value))
+			delete(uniqueUIDSet, value)
+		}
+	}
+	return
+
+
+	/*
+	// 限制最大goroutine数量
+	waitGroup := &sync.WaitGroup{}
+	waitGroup.Add(PROCESS_UID_VAVEL)
+	outputChan := make(chan PeerUID, PROCESS_UID_VAVEL)
+	inputChan := make(chan int, PROCESS_UID_VAVEL)
+	go func() {
+		for  {
+			if uniqueUIDSet.Size() == 0 {
+				close(inputChan)
+				break
+			}
+			uId, ok := uniqueUIDSet.Pop().(int)
+			if !ok {
+				continue
+			}
+			inputChan <- uId
+		}
+	}()
+	for i := 0; i < PROCESS_UID_VAVEL ; i++ {
+		go func() {
+			followService.CalculateUIDFollowFansCnt(inputChan, outputChan)
+			waitGroup.Done()
+		}()
+	}
+
+	go func() {
+		waitGroup.Wait()
+		close(outputChan)
+	}()
+
+	for peerUID := range outputChan {
+		followService.Traffic <- peerUID
+	}
+	*/
+}
+
