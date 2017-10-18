@@ -55,16 +55,10 @@ func (followService *FollowService) Produce() {
 }
 
 func (followService *FollowService) Consumer() {
-	wg := &sync.WaitGroup{}
 	lock := &sync.RWMutex{}
-	for peerUID := range followService.Traffic {
-		wg.Add(1)
-		go func() {
-			followService.WriteDbRedis(peerUID, lock)
-			wg.Done()
-		}()
+	for peerUID := range followService.Traffic { // 单进程跑redis
+		followService.WriteDbRedis(peerUID, lock)
 	}
-	wg.Wait()
 	log.Println("所有用户数据处理完毕")
 }
 
