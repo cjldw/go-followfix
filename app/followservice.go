@@ -55,7 +55,7 @@ func (followService *FollowService) Produce() {
 }
 
 func (followService *FollowService) Consumer() {
-	valve := make(chan struct{}, PROCESS_UID_VAVEL)
+	valve := make(chan PeerUID, PROCESS_UID_VAVEL)
 	for peerUID := range followService.Traffic {
 		valve <- peerUID
 		go func() {
@@ -66,7 +66,7 @@ func (followService *FollowService) Consumer() {
 }
 
 // WriteDbRedis 将单个UID用户写入到Reids中, 更新数据库
-func (followService *FollowService) WriteDbRedis(peerUID PeerUID, valve <-chan struct{}) {
+func (followService *FollowService) WriteDbRedis(peerUID PeerUID, valve <-chan PeerUID) {
 	uId := peerUID.UID
 	redisSocial, err := GetApp().redismgr.GetRedisByName(REDIS_SOCIAL)
 	CheckErr(err)
