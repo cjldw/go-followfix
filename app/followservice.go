@@ -55,15 +55,18 @@ func (followService *FollowService) Produce() {
 }
 
 func (followService *FollowService) Consumer() {
-	lock := &sync.RWMutex{}
-	for peerUID := range followService.Traffic { // 单进程跑redis
-		followService.WriteDbRedis(peerUID, lock)
+	valve := make(chan struct{}, PROCESS_UID_VAVEL)
+	for peerUID := range followService.Traffic {
+		valve <- peerUID
+		go func() {
+			followService.WriteDbRedis(peerUID, valve)
+		}()
 	}
 	log.Println("所有用户数据处理完毕")
 }
 
 // WriteDbRedis 将单个UID用户写入到Reids中, 更新数据库
-func (followService *FollowService) WriteDbRedis(peerUID PeerUID, lock *sync.RWMutex) {
+func (followService *FollowService) WriteDbRedis(peerUID PeerUID, valve <-chan struct{}) {
 	uId := peerUID.UID
 	redisSocial, err := GetApp().redismgr.GetRedisByName(REDIS_SOCIAL)
 	CheckErr(err)
@@ -128,7 +131,7 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID, lock *sync.RWM
 		}
 		redisSocial.RedisClient.ZAdd(friendsListKey, item)
 	}
-
+	<- valve
 }
 
 // getUIDFansCnt get user's fans number
