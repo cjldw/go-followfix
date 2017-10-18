@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"sync"
 	"github.com/go-redis/redis"
-	"time"
+	//"time"
 )
 
 var followService *FollowService
@@ -57,13 +57,21 @@ func (followService *FollowService) Produce() {
 }
 
 func (followService *FollowService) Consumer() {
+	waitGroup := &sync.WaitGroup{}
 	valve := make(chan PeerUID, PROCESS_UID_VAVEL)
+	//lock := &sync.RWMutex{}
 	for peerUID := range followService.Traffic {
+		waitGroup.Add(1)
+		WriteLog("d:/consumer.log", fmt.Sprintf("%d", peerUID.UID))
 		valve <- peerUID
 		go func() {
+			//lock.RLock()
+			//defer lock.RUnlock()
 			followService.WriteDbRedis(peerUID, valve)
+			waitGroup.Done()
 		}()
 	}
+	//waitGroup.Wait()
 	log.Println("所有用户数据处理完毕")
 }
 
@@ -77,7 +85,7 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID, valve <-chan P
 	var friendsListKey string = fmt.Sprintf("%s%d", FRIEND_SYSTEM_USER_FRIENDS, uId)
 
 	// Fetch UID's Follow List And Storage To Social Redis
-	fmt.Printf("UID[%d] 关注数量: %d 关注列表: %v \n", uId, len(peerUID.FollowCntSet), peerUID.FollowCntSet)
+	//fmt.Printf("UID[%d] 关注数量: %d 关注列表: %v \n", uId, len(peerUID.FollowCntSet), peerUID.FollowCntSet)
 	for _, followUID := range peerUID.FollowCntSet {
 		//WriteLog("/tmp/uid_follow.log", fmt.Sprintf("%v", iFollowUID))
 		followUIDFansCnt := getUIDFansCnt(followUID)
@@ -85,26 +93,35 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID, valve <-chan P
 			Score:  float64(followUIDFansCnt),
 			Member: followUID,
 		}
-		redisSocial.RedisClient.ZAdd(followListKey, item)
+		err := redisSocial.ZAdd(followListKey, item).Err()
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
-	fmt.Printf("UID[%d] 粉丝数量: %d 粉丝列表: %v \n", uId, len(peerUID.FansCntSet), peerUID.FansCntSet)
+	//fmt.Printf("UID[%d] 粉丝数量: %d 粉丝列表: %v \n", uId, len(peerUID.FansCntSet), peerUID.FansCntSet)
 	for _, fansUID := range peerUID.FansCntSet {
 		fansUIDFansCnt := getUIDFansCnt(fansUID)
 		item := redis.Z{
 			Score:  float64(fansUIDFansCnt),
 			Member: fansUID,
 		}
-		redisSocial.RedisClient.ZAdd(fansListKey, item)
+		err := redisSocial.ZAdd(fansListKey, item).Err()
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 
-	fmt.Printf("UID[%d] 好友数量: %d 好友列表: %v \n", uId, len(peerUID.FriendsCntSet), peerUID.FriendsCntSet)
+	//fmt.Printf("UID[%d] 好友数量: %d 好友列表: %v \n", uId, len(peerUID.FriendsCntSet), peerUID.FriendsCntSet)
 	for _, friendUID := range peerUID.FriendsCntSet {
 		friendsUIDFansCnt := getUIDFansCnt(friendUID)
 		item := redis.Z{
 			Score:  float64(friendsUIDFansCnt),
 			Member: friendUID,
 		}
-		redisSocial.RedisClient.ZAdd(friendsListKey, item)
+		err := redisSocial.ZAdd(friendsListKey, item).Err()
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 	<- valve
 }
@@ -116,7 +133,7 @@ func getUIDFansCnt(uid int) int {
 	redisSocial, err := GetApp().redismgr.GetRedisByName(REDIS_SOCIAL)
 	CheckErr(err)
 	fansCntKey := fmt.Sprintf("id_%d_fanscnt", uid)
-	sFansCnt, err := redisSocial.RedisClient.HGet(TMP_UID_FANS_NUM, fansCntKey).Result()
+	sFansCnt, err := redisSocial.HGet(TMP_UID_FANS_NUM, fansCntKey).Result()
 	if err == nil {
 		iFansCnt, err := strconv.Atoi(sFansCnt)
 		if err != nil {
@@ -128,7 +145,7 @@ func getUIDFansCnt(uid int) int {
 	dbUserData, err := GetApp().dbmgr.GetDbByName(DB_USERS_DATA)
 	CheckErr(err)
 	var fansCnt, fragmentCnt int
-	now := time.Now()
+	//now := time.Now()
 	for index := 0; index < USER_FOLLOW_SPLIT_TABLE_NUM; index++ {
 		sql = fmt.Sprintf("select count(*) as fansCnt from user_follow_%d where anchor = %d and status = 1 "+
 			"and isFriends = 0", index, uid)
@@ -136,9 +153,9 @@ func getUIDFansCnt(uid int) int {
 		fansCnt += fragmentCnt
 	}
 	//	log.Printf("UID[%s] 粉丝数量 [%d]", fansCntKey, fansCnt)
-	redisSocial.RedisClient.HSet(TMP_UID_FANS_NUM, fansCntKey, strconv.Itoa(fansCnt))
+	redisSocial.HSet(TMP_UID_FANS_NUM, fansCntKey, strconv.Itoa(fansCnt))
 	//	WriteLog("/tmp/time.log", fmt.Sprintf("粉丝时间： %v", time.Since(now)))
-	fmt.Printf("UID[%d]粉丝数量: %v \n", uid, time.Since(now))
+	//fmt.Printf("UID[%d]粉丝数量: %v \n", uid, time.Since(now))
 	return fansCnt
 }
 
@@ -204,7 +221,7 @@ func (followService *FollowService) processSplitTable(tableName string) {
 		var uid, anchor int
 		dbRows.Scan(&uid, &anchor)
 		uniqueUIDSet[uid] = uid
-		uniqueUIDSet[anchor] = anchor
+		//uniqueUIDSet[anchor] = anchor
 	}
 	fmt.Printf("表 [%s] 共[%d] 个UID \n", tableName, len(uniqueUIDSet))
 	// 限制最大goroutine数量
