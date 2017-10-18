@@ -29,3 +29,6 @@ const FRIEND_SYSTEM_USER_FRIENDS = "friend:system:user:friends:"
 
 // TMP_UID_FANS_NUM storage uid fans number temporary
 const TMP_UID_FANS_NUM  = "tmp:uid:fans:num"
+
+// PROCESS_UID_VAVEL goroutine 阀门
+const PROCESS_UID_VAVEL  =  1000

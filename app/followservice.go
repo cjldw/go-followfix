@@ -5,10 +5,10 @@ import (
 	"log"
 	"strconv"
 	"sync"
-	"time"
-
 	"github.com/go-redis/redis"
 	set "gopkg.in/fatih/set.v0"
+	//"os"
+	"time"
 )
 
 var followService *FollowService
@@ -28,10 +28,6 @@ type PeerUID struct {
 	FriendsCnt *set.Set
 }
 
-
-var produceCnt, consumeCnt, writeRedisCnt int
-
-
 var followOnce *sync.Once = &sync.Once{}
 
 func NewFollowService() *FollowService {
@@ -47,7 +43,6 @@ func (followService *FollowService) Produce() {
 	wg := &sync.WaitGroup{}
 	for table := 0; table < 1; table++ {
 		tablename := USER_FOLLOW_TABLE_PREFIX + strconv.Itoa(table)
-		fmt.Println(tablename)
 		wg.Add(1)
 		go (func() {
 			followService.processSplitTable(tablename)
@@ -55,99 +50,35 @@ func (followService *FollowService) Produce() {
 		})()
 	}
 	wg.Wait()
-
-	trafficChanStock := 10 // cap(followService.Traffic)
-	// 确保Traffic通道中的数据都消费完毕
-	for i := 0; i < trafficChanStock ; i++  {
-		followService.Traffic <- PeerUID{UID:0}
-	}
-	fmt.Println("------produce ok1--------------")
 	close(followService.Traffic)
-	fmt.Println("------produce ok2--------------")
+	fmt.Println("------produce ok--------------")
 }
 
 func (followService *FollowService) Consumer() {
-	//wg := &sync.WaitGroup{}
+	wg := &sync.WaitGroup{}
 	lock := &sync.RWMutex{}
-
 	for peerUID := range followService.Traffic {
-		WriteLog("/tmp/consume_uid.log", fmt.Sprintf("%v", peerUID))
-		now := time.Now()
-		followService.WriteDbRedis(peerUID, lock)
-		WriteLog("/tmp/time.log", fmt.Sprintf("时间【%v】", time.Since(now)))
+		wg.Add(1)
+		go func() {
+			followService.WriteDbRedis(peerUID, lock)
+			wg.Done()
+		}()
 	}
-	fmt.Println("for end")
-	//wg.Wait()
-	fmt.Println("wait end")
-	fmt.Println("------------consume end--------")
-	// wg.Wait()
+	wg.Wait()
 	log.Println("所有用户数据处理完毕")
-	fmt.Println(fmt.Sprintf("生产：　%d  消费:  %d 写redis: %d", produceCnt, consumeCnt, writeRedisCnt))
-/*
-	for {
-		select {
-		case boolValue := <-followService.ProduceEnd:
-			fmt.Println(boolValue)
-			break
-		case <-followService.Traffic:
-			//wg.Add(1)
-			go (func() {
-				now := time.Now()
-				followService.WriteDbRedis(peerUID, lock)
-				WriteLog("/tmp/time.log", fmt.Sprintf("时间【%v】", time.Since(now)))
-				wg.Done()
-			})()
-			fmt.Println("消费")
-		}
-	}
-*/
 }
 
 // WriteDbRedis 将单个UID用户写入到Reids中, 更新数据库
 func (followService *FollowService) WriteDbRedis(peerUID PeerUID, lock *sync.RWMutex) {
-	uid := peerUID.UID
-	if uid == 0 {
-		return
-	}
-	// fansCnt := peerUID.FansCnt.Size()
-
-	// lock.Lock()
-	// defer lock.Unlock()
-	log.Printf("Write to [%d] to redis", uid)
-
-	/*
-		dbUsersData, err := GetApp().dbmgr.GetDbByName(DB_USERS_DATA)
-		CheckErr(err)
-		tableName := USER_FOLLOW_TABLE_PREFIX + strconv.Itoa(uid % USER_FOLLOW_SPLIT_TABLE_NUM)
-		fansCntSql := fmt.Sprintf("update %s set fansCnt = %d where uid = %d", tableName, fansCnt, uid)
-		log.Println(fansCntSql)
-		affected, err := dbUsersData.Db.Exec(fansCntSql)
-		CheckErr(err)
-		affectedRows, err := affected.RowsAffected()
-		CheckErr(err)
-		log.Println(fmt.Sprintf("UPDATE FANS OK  ROW 【%d】", affectedRows))
-
-		for index := 0; index < USER_FOLLOW_SPLIT_TABLE_NUM ; index++  { // can not execute multiple statement
-			anchorCntSql := fmt.Sprintf("update user_follow_%d set anchorFansCnt = %d where anchor = %d;", index, fansCnt, uid)
-			affected, err = dbUsersData.Db.Exec(anchorCntSql)
-			log.Println(anchorCntSql)
-			CheckErr(err)
-			affectedRows, err = affected.RowsAffected()
-			CheckErr(err)
-			log.Println(fmt.Sprintf("UPDATE ANCHOR OK ROW 【%d】", affectedRows))
-		}
-	*/
-
+	uId := peerUID.UID
 	redisSocial, err := GetApp().redismgr.GetRedisByName(REDIS_SOCIAL)
 	CheckErr(err)
-	var followListKey string = fmt.Sprintf("%s%d", FRIEND_SYSTEM_USER_FOLLOW, uid)
-	var fansListKey string = fmt.Sprintf("%s%d", FRIEND_SYSTEM_USER_FANS, uid)
-	var friendsListKey string = fmt.Sprintf("%s%d", FRIEND_SYSTEM_USER_FRIENDS, uid)
+	var followListKey string = fmt.Sprintf("%s%d", FRIEND_SYSTEM_USER_FOLLOW, uId)
+	var fansListKey string = fmt.Sprintf("%s%d", FRIEND_SYSTEM_USER_FANS, uId)
+	var friendsListKey string = fmt.Sprintf("%s%d", FRIEND_SYSTEM_USER_FRIENDS, uId)
 
-	//log.Printf("PEEUID对象信息 :%v\n", peerUID)
-	//	WriteLog("/tmp/time.log", fmt.Sprintf("粉丝时间： %v", time.Since(now)))
 	// Fetch UID's Follow List And Storage To Social Redis
-	WriteLog("/tmp/uid_follow_list.log", fmt.Sprintf("%v", peerUID.FollowCnt.List()))
+	fmt.Printf("UID[%d] 关注数量: %d 关注列表: %d \n", uId, peerUID.FollowCnt.Size(), peerUID.FollowCnt)
 	for { // 处理关注
 		//		log.Printf("用户[%d]关注 ->［%v］\n", uid, followUID)
 		if peerUID.FollowCnt.Size() == 0 {
@@ -158,17 +89,15 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID, lock *sync.RWM
 		if !ok {
 			continue
 		}
-		WriteLog("/tmp/uid_follow.log", fmt.Sprintf("%v", iFollowUID))
+		//WriteLog("/tmp/uid_follow.log", fmt.Sprintf("%v", iFollowUID))
 		followUIDFansCnt := getUIDFansCnt(iFollowUID)
 		item := redis.Z{
 			Score:  float64(followUIDFansCnt),
 			Member: followUID,
 		}
-		writeRedisCnt += 1
 		redisSocial.RedisClient.ZAdd(followListKey, item)
 	}
-	consumeCnt += 1
-	return
+	fmt.Printf("UID[%d] 粉丝数量: %d 粉丝列表: %d \n", uId, peerUID.FansCnt.Size(), peerUID.FansCnt)
 	for { // 处理粉丝
 		//		log.Printf("用户[%d]粉丝 ->［%v］\n", uid, fansUID)
 		if peerUID.FansCnt.Size() == 0 {
@@ -187,6 +116,7 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID, lock *sync.RWM
 		redisSocial.RedisClient.ZAdd(fansListKey, item)
 	}
 
+	fmt.Printf("UID[%d] 好友数量: %d 好友列表: %d \n", uId, peerUID.FriendsCnt.Size(), peerUID.FriendsCnt)
 	for { // 处理好友
 		//		log.Printf("用户[%d]好有 ->［%v］\n", uid, friendsUID)
 		if peerUID.FriendsCnt.Size() == 0 {
@@ -214,21 +144,19 @@ func getUIDFansCnt(uid int) int {
 	redisSocial, err := GetApp().redismgr.GetRedisByName(REDIS_SOCIAL)
 	CheckErr(err)
 	fansCntKey := fmt.Sprintf("id_%d_fanscnt", uid)
-	//log.Println(fansCntKey)
 	sFansCnt, err := redisSocial.RedisClient.HGet(TMP_UID_FANS_NUM, fansCntKey).Result()
 	if err == nil {
 		iFansCnt, err := strconv.Atoi(sFansCnt)
 		if err != nil {
-			//			log.Printf("Convert fans count [%s] ERROR!\n", sFansCnt)
 			return 0
 		}
-		//		log.Printf("UID[%s] 缓存中获取 [%d]", fansCntKey, iFansCnt)
 		return iFansCnt
 	}
 	var sql string
 	dbUserData, err := GetApp().dbmgr.GetDbByName(DB_USERS_DATA)
 	CheckErr(err)
 	var fansCnt, fragmentCnt int
+	now := time.Now()
 	for index := 0; index < USER_FOLLOW_SPLIT_TABLE_NUM; index++ {
 		sql = fmt.Sprintf("select count(*) as fansCnt from user_follow_%d where anchor = %d and status = 1 "+
 			"and isFriends = 0", index, uid)
@@ -238,6 +166,7 @@ func getUIDFansCnt(uid int) int {
 	//	log.Printf("UID[%s] 粉丝数量 [%d]", fansCntKey, fansCnt)
 	redisSocial.RedisClient.HSet(TMP_UID_FANS_NUM, fansCntKey, strconv.Itoa(fansCnt))
 	//	WriteLog("/tmp/time.log", fmt.Sprintf("粉丝时间： %v", time.Since(now)))
+	fmt.Printf("UID[%d]粉丝数量: %v \n", uid, time.Since(now))
 	return fansCnt
 }
 
@@ -245,8 +174,7 @@ func getUIDFansCnt(uid int) int {
 func (followService *FollowService) processSplitTable(tablename string) {
 	dbUsersData, err := GetApp().dbmgr.GetDbByName(DB_USERS_DATA)
 	CheckErr(err)
-	sql := fmt.Sprintf("select uid, anchor from %s where isAnchor = 1 and isFriends = 0 and status = 1 limit 5", tablename)
-	fmt.Println(sql)
+	sql := fmt.Sprintf("select uid, anchor from %s where  status = 1 and isFriends = 0 and isAnchor = 1", tablename)
 	/*
 		if !followService.excludeUIDSet.IsEmpty() { // exclude has process uid
 			uidList1 := followService.excludeUIDSet.List()
@@ -267,80 +195,103 @@ func (followService *FollowService) processSplitTable(tablename string) {
 			sql += fmt.Sprintf(" and anchor not in (%s)", strings.Join(anchorIdList2, ","))
 		}
 	*/
+	fmt.Println(sql)
 	dbRows, err := dbUsersData.Db.Query(sql)
 	defer dbRows.Close()
 	CheckErr(err)
 	uniqueUIDSet := set.New()
-	var uid, anchor int
 	for dbRows.Next() {
+		var uid, anchor int
 		dbRows.Scan(&uid, &anchor)
 		// followService.excludeUIDSet.Add(uid) // record
 		// followService.excludeAnchorIdSet.Add(anchor)
-		WriteLog("/tmp/produceUID", fmt.Sprintf("%d, %d", uid, anchor))
+		//WriteLog("/tmp/produceUID", fmt.Sprintf("%d, %d", uid, anchor))
 		uniqueUIDSet.Add(uid)
 		uniqueUIDSet.Add(anchor)
 	}
-	fmt.Printf("表 [%s] 共[%d] 个UID ", tablename, uniqueUIDSet.Size())
-	WriteLog("/tmp/uidlist.log", fmt.Sprintf("%v", uniqueUIDSet))
-	uidChan := make(chan int, 2000) // 10
-	for {
-		if uniqueUIDSet.Size() == 0 {
-			break
+	fmt.Printf("表 [%s] 共[%d] 个UID \n", tablename, uniqueUIDSet.Size())
+
+	// 限制最大goroutine数量
+	waitGroup := &sync.WaitGroup{}
+	waitGroup.Add(PROCESS_UID_VAVEL)
+	outputChan := make(chan PeerUID, PROCESS_UID_VAVEL)
+	inputChan := make(chan int, PROCESS_UID_VAVEL)
+	go func() {
+		for  {
+			if uniqueUIDSet.Size() == 0 {
+				close(inputChan)
+				break
+			}
+			uId, ok := uniqueUIDSet.Pop().(int)
+			if !ok {
+				continue
+			}
+			inputChan <- uId
 		}
-		puid := uniqueUIDSet.Pop() // 14
-		opuid := puid.(int)
-		uidChan <- opuid
-		followService.CalculateUIDFollowFansCnt(opuid, uidChan)
+	}()
+	for i := 0; i < PROCESS_UID_VAVEL ; i++ {
+		go func() {
+			followService.CalculateUIDFollowFansCnt(inputChan, outputChan)
+			waitGroup.Done()
+		}()
+	}
+
+	go func() {
+		waitGroup.Wait()
+		close(outputChan)
+	}()
+
+	for peerUID := range outputChan {
+		followService.Traffic <- peerUID
 	}
 }
 
 // CalculateUIDFollowFansCnt 计算单个UID的粉丝数, 关注数, 存放到集合中
-func (followService *FollowService) CalculateUIDFollowFansCnt(uid int, uidChan chan int) {
-	dbUsersData, err := GetApp().dbmgr.GetDbByName(DB_USERS_DATA)
-	CheckErr(err)
-
-	followCntSet := set.New()
-	fansCntSet := set.New()
-	friendsCntSet := set.New()
-	var followSql, fansSql, tablename string
-	var followAnchor, fansAnchor, friendsCnt int
-	for index := 0; index < 10; index++ {
-		tablename = USER_FOLLOW_TABLE_PREFIX + strconv.Itoa(index)
-		followSql = fmt.Sprintf("select anchor from %s where uid = %d and isFriends = 0 and status = 1", tablename, uid)
-		//log.Println(followSql)
-		followRows, err := dbUsersData.Db.Query(followSql)
+func (followService *FollowService) CalculateUIDFollowFansCnt(inputChan <-chan int, outputChan chan <- PeerUID) {
+	for uId := range inputChan{
+		dbUsersData, err := GetApp().dbmgr.GetDbByName(DB_USERS_DATA)
 		CheckErr(err)
-		for followRows.Next() {
-			followRows.Scan(&followAnchor)
-			followCntSet.Add(followAnchor)
-			WriteLog("/tmp/produce_follow_uid.log", fmt.Sprintf("%v", followAnchor))
-		}
-		followRows.Close()
+		var followSql, fansSql, tablename string
+		var followAnchor, fansAnchor, friendsCnt int
+		followCntSet := set.New()
+		fansCntSet := set.New()
+		friendsCntSet := set.New()
 
-		fansSql = fmt.Sprintf("select uid from %s where anchor = %d and isFriends = 0 and status = 1", tablename, uid)
-		//log.Println(fansSql)
-		fansRows, err := dbUsersData.Db.Query(fansSql)
-		CheckErr(err)
-		for fansRows.Next() {
-			fansRows.Scan(&fansAnchor)
-			fansCntSet.Add(fansAnchor)
-		}
-		fansRows.Close()
+		for index := 0; index < 10; index++ {
+			tablename = USER_FOLLOW_TABLE_PREFIX + strconv.Itoa(index)
+			followSql = fmt.Sprintf("select anchor from %s where uid = %d and isFriends = 0 and status = 1", tablename, uId)
+			//log.Println(followSql)
+			followRows, err := dbUsersData.Db.Query(followSql)
+			CheckErr(err)
+			for followRows.Next() {
+				followRows.Scan(&followAnchor)
+				followCntSet.Add(followAnchor)
+				//WriteLog("/tmp/produce_follow_uid.log", fmt.Sprintf("%v", followAnchor))
+			}
+			followRows.Close()
 
-		friendsSql := fmt.Sprintf("select uid from %s where uid = %d and isFriends = 1 and status = 1", tablename, uid)
-		friendsRows, err := dbUsersData.Db.Query(friendsSql)
-		CheckErr(err)
+			fansSql = fmt.Sprintf("select uid from %s where anchor = %d and isFriends = 0 and status = 1", tablename, uId)
+			//log.Println(fansSql)
+			fansRows, err := dbUsersData.Db.Query(fansSql)
+			CheckErr(err)
+			for fansRows.Next() {
+				fansRows.Scan(&fansAnchor)
+				fansCntSet.Add(fansAnchor)
+			}
+			fansRows.Close()
 
-		for friendsRows.Next() {
-			friendsRows.Scan(&friendsCnt)
-			friendsCntSet.Add(friendsCnt)
+			friendsSql := fmt.Sprintf("select uid from %s where uid = %d and isFriends = 1 and status = 1", tablename, uId)
+			friendsRows, err := dbUsersData.Db.Query(friendsSql)
+			CheckErr(err)
+
+			for friendsRows.Next() {
+				friendsRows.Scan(&friendsCnt)
+				friendsCntSet.Add(friendsCnt)
+			}
+			friendsRows.Close()
 		}
-		friendsRows.Close()
+		peerUID := PeerUID{UID: uId, FollowCnt: followCntSet, FansCnt: fansCntSet, FriendsCnt: friendsCntSet}
+		outputChan <- peerUID
+		fmt.Println(peerUID)
 	}
-
-	peerUID := PeerUID{UID: uid, FollowCnt: followCntSet, FansCnt: fansCntSet, FriendsCnt: friendsCntSet}
-	WriteLog("/tmp/peeuid.log", fmt.Sprintf("%v", peerUID))
-	followService.Traffic <- peerUID
-	produceCnt += 1
-	<-uidChan
 }

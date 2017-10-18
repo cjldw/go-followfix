@@ -79,8 +79,6 @@ func TestGetUIDFansCnt(t *testing.T)  {
 	for i := 0 ; i < 10 ; i++  {
 		demo <- i
 	}
-
 	wg.Wait()
-
 	t.Log("-----------------")
 }
