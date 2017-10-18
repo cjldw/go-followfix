@@ -21,7 +21,7 @@ func main()  {
 
 
 func TimerUpdate() {
-	timer1 := time.NewTicker(10 * time.Second)
+	timer1 := time.NewTicker(4 * time.Second)
 	for {
 		select {
 		case <-timer1.C:

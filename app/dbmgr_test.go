@@ -33,7 +33,7 @@ func TestQuery(t *testing.T)  {
 
 		db, err := dbmgr.GetDbByName(DB_USERS_DATA)
 		CheckErr(err)
-		rows, err := db.Db.Query("select id, uid from user_follow limit 10")
+		rows, err := db.Query("select id, uid from user_follow limit 10")
 		defer rows.Close()
 		CheckErr(err)
 
