@@ -208,6 +208,15 @@ func (followService *FollowService) processSplitTable(tablename string) {
 	}
 	fmt.Printf("表 [%s] 共[%d] 个UID \n", tablename, uniqueUIDSet.Size())
 
+	for  {
+		if uniqueUIDSet.Size() == 0 {
+			break
+		}
+		WriteLog("d:/settest.log", fmt.Sprintf("%v", uniqueUIDSet.Pop()))
+
+	}
+	return
+
 	// 限制最大goroutine数量
 	waitGroup := &sync.WaitGroup{}
 	waitGroup.Add(PROCESS_UID_VAVEL)
