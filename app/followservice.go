@@ -2,11 +2,9 @@ package app
 
 import (
 	"fmt"
-	"log"
 	"strconv"
 	"sync"
 	"github.com/go-redis/redis"
-	//"time"
 )
 
 var followService *FollowService
@@ -63,14 +61,13 @@ func (followService *FollowService) Consumer() {
 		go func() {
 			//lock := &sync.RWMutex{}
 			for peerUID := range followService.Traffic {
-				WriteLog("d:/consumerUID.log", fmt.Sprintf("%d", peerUID.UID))
 				followService.WriteDbRedis(peerUID)
 			}
 			waitGroup.Done()
 		}()
 	}
 	waitGroup.Wait()
-	log.Println("所有用户数据处理完毕")
+	fmt.Println("--------所有用户PeeUID消费完毕------------")
 }
 
 // WriteDbRedis 将单个UID用户写入到Reids中, 更新数据库
@@ -84,9 +81,9 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID) {
 
 	// Fetch UID's Follow List And Storage To Social Redis
 	//fmt.Printf("UID[%d] 关注数量: %d 关注列表: %v \n", uId, len(peerUID.FollowCntSet), peerUID.FollowCntSet)
-	if len(peerUID.FollowCntSet) > 0 {
+	/* if len(peerUID.FollowCntSet) > 0 {
 		WriteLog("d:/rediskey.log", followListKey)
-	}
+	} */
 	for _, followUID := range peerUID.FollowCntSet {
 		//WriteLog("/tmp/uid_follow.log", fmt.Sprintf("%v", iFollowUID))
 		followUIDFansCnt := getUIDFansCnt(followUID)
@@ -100,9 +97,9 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID) {
 		}
 	}
 	//fmt.Printf("UID[%d] 粉丝数量: %d 粉丝列表: %v \n", uId, len(peerUID.FansCntSet), peerUID.FansCntSet)
-	if len(peerUID.FansCntSet) > 0 {
+	/* if len(peerUID.FansCntSet) > 0 {
 		WriteLog("d:/rediskey.log", fansListKey)
-	}
+	} */
 	for _, fansUID := range peerUID.FansCntSet {
 		fansUIDFansCnt := getUIDFansCnt(fansUID)
 		item := redis.Z{
@@ -115,10 +112,9 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID) {
 		}
 	}
 
-	if len(peerUID.FriendsCntSet) > 0 {
+	/* if len(peerUID.FriendsCntSet) > 0 {
 		WriteLog("d:/rediskey.log", friendsListKey)
-	}
-	//fmt.Printf("UID[%d] 好友数量: %d 好友列表: %v \n", uId, len(peerUID.FriendsCntSet), peerUID.FriendsCntSet)
+	} */
 	for _, friendUID := range peerUID.FriendsCntSet {
 		friendsUIDFansCnt := getUIDFansCnt(friendUID)
 		item := redis.Z{
