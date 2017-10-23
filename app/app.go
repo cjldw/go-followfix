@@ -42,6 +42,7 @@ func NewApp() *App  {
 			redismgr.InitializeRedisList(app.confmgr.RedisConf)
 			return redismgr
 		})()
+		InitLog("")
 	})
 	return app
 }
@@ -50,7 +51,11 @@ func NewApp() *App  {
 func (app *App) Run()  {
 	wg := &sync.WaitGroup{}
 	followService := NewFollowService()
-	RunAsync(wg, followService.Produce)
+	if app.confmgr.Hotfix {
+		RunAsync(wg, followService.ProduceOnlyHalfMouth)
+	} else {
+		RunAsync(wg, followService.Produce)
+	}
 	RunAsync(wg, followService.Consumer)
 	wg.Wait()
 }

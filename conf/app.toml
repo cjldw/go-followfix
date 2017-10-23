@@ -1,12 +1,16 @@
 name = "follow_data_fix"
 version = "1.0"
+hotfix = true # if true only fix half mouth anchor live changed. if zero fix all data
 [dbConf]
 [dbConf.users_data]
 driver = "mysql"
 dsn = "root:111111@tcp(127.0.0.1:3306)/users_data?charset=utf8"
-# 最大连接数
 maxOpenConns = 500
-# 最大空闲连接数
+maxIdleConns = 300
+[dbConf.contents]
+driver = "mysql"
+dsn = "root:111111@tcp(127.0.0.1:3306)/test?charset=utf8"
+maxOpenConns = 500
 maxIdleConns = 300
 
 [redisConf]

@@ -24,27 +24,19 @@ func TestSeelog(t *testing.T)  {
 func TestQuery(t *testing.T)  {
 	conf := NewAppConf()
 	conf.Load("../conf/app.toml", true)
-	t.Log(conf)
 	dbmgr := NewDbMgr()
 	dbmgr.InitializeDbList(conf.DbConf)
-	pool := make(chan int, 100)
-	for  {
-		pool <- 10
-
-		db, err := dbmgr.GetDbByName(DB_USERS_DATA)
-		CheckErr(err)
-		rows, err := db.Query("select id, uid from user_follow limit 10")
-		defer rows.Close()
-		CheckErr(err)
-
+	db, err := dbmgr.GetDbByName(DB_CONTENTS)
+	CheckErr(err)
+	rows, err := db.Query("select a, b from tx_test limit 10")
+	defer rows.Close()
+	CheckErr(err)
+	for rows.Next() {
 		var (
-			id int
-			uid int
+			a int
+			b int
 		)
-		for rows.Next() {
-			rows.Scan(&id)
-			rows.Scan(&uid)
-			fmt.Println(fmt.Sprintf("UID【%d】 ID【%d】"), id, uid)
-		}
+		rows.Scan(&a, &b)
+		fmt.Println(fmt.Sprintf("UID【%d】 ID【%d】", a, b))
 	}
 }

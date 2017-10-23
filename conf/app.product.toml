@@ -1,5 +1,6 @@
 name = "datafix script"
 version = "1.0"
+hotfix = true # if true only fix half mouth anchor live changed. if zero fix all data
 [dbConf]
 [dbConf.users_data]
  host = "10.62.62.114"

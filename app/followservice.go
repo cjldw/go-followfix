@@ -2,11 +2,11 @@ package app
 
 import (
 	"fmt"
-	"log"
 	"strconv"
 	"sync"
 	"github.com/go-redis/redis"
 	//"time"
+	log "github.com/cihub/seelog"
 )
 
 var followService *FollowService
@@ -56,6 +56,26 @@ func (followService *FollowService) Produce() {
 	fmt.Println("--------所有用户PeeUID构造完毕------------")
 }
 
+func (f *FollowService) ProduceOnlyHalfMouth()  {
+	dbContents, err := GetApp().dbmgr.GetDbByName(DB_CONTENTS)
+	if err != nil {
+		log.Errorf("get db connection error %v", err)
+	}
+	sql := "select id, uid from tx_test limit 10"
+	rows, err := dbContents.Query(sql)
+	defer rows.Close()
+	if err != nil {
+		log.Critical(err)
+	}
+	for rows.Next() {
+		var (
+			id int
+			uid int
+		)
+		rows.Scan(&id, &uid)
+	}
+}
+
 func (followService *FollowService) Consumer() {
 	waitGroup := &sync.WaitGroup{}
 	valve := make(chan PeerUID, PROCESS_UID_VAVEL)
@@ -72,7 +92,6 @@ func (followService *FollowService) Consumer() {
 		}()
 	}
 	//waitGroup.Wait()
-	log.Println("所有用户数据处理完毕")
 }
 
 // WriteDbRedis 将单个UID用户写入到Reids中, 更新数据库

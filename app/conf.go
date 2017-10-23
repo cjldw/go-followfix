@@ -10,6 +10,7 @@ import (
 type AppConf struct {
 	Name string
 	Version string
+	Hotfix bool
 	DbConf map[string] DbInst
 	RedisConf map[string] RedisInst
 }

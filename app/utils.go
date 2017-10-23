@@ -4,6 +4,7 @@ import (
 	"sync"
 	"os"
 	"bufio"
+	"path/filepath"
 )
 
 // RunAsync
@@ -32,3 +33,9 @@ func WriteLog(dir, line string) {
 	w.Flush()
 }
 
+func GetAbsPath(file string) (string, error) {
+	if filepath.IsAbs(file) {
+		return file, nil
+	}
+	return filepath.Abs(file)
+}
