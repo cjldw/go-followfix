@@ -8,11 +8,18 @@ hotfix = true # if true only fix half mouth anchor live changed. if zero fix all
  password = "123456"
  database = "users_data"
  port = 8066
+ [dbConf.contents]
+ driver = "mysql"
+ dsn = "root:111111@tcp(127.0.0.1:3306)/contents?charset=utf8"
+ # 最大连接数
+ maxOpenConns = 500
+ # 最大空闲连接数
+ maxIdleConns = 300
 
 [redisConf]
 [redisConf.social]
 host = "127.0.0.1"
-port = 8888
+port = 6379
 socket = "/dev/shm/social.socket"
 db = 0
 password = ""

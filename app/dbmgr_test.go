@@ -26,17 +26,42 @@ func TestQuery(t *testing.T)  {
 	conf.Load("../conf/app.toml", true)
 	dbmgr := NewDbMgr()
 	dbmgr.InitializeDbList(conf.DbConf)
-	db, err := dbmgr.GetDbByName(DB_CONTENTS)
+	db, err := dbmgr.GetDbByName(DB_USERS_DATA)
 	CheckErr(err)
-	rows, err := db.Query("select a, b from tx_test limit 10")
+	rows, err := db.Query("select id, uid from user_follow")
 	defer rows.Close()
-	CheckErr(err)
+
 	for rows.Next() {
 		var (
-			a int
-			b int
+			id int
+			uid int
 		)
-		rows.Scan(&a, &b)
-		fmt.Println(fmt.Sprintf("UID【%d】 ID【%d】", a, b))
+		rows.Scan(&id)
+		rows.Scan(&uid)
+
+		t.Log(id, uid)
+	}
+
+	return
+
+	return;
+	pool := make(chan int, 100)
+	for  {
+		pool <- 10
+		db, err := dbmgr.GetDbByName(DB_CONTENTS)
+		CheckErr(err)
+		rows, err := db.Query("select id, name from games")
+		CheckErr(err)
+		var (
+			id int
+			name string
+		)
+		for rows.Next() {
+			rows.Scan(&id)
+			rows.Scan(&name)
+			fmt.Println(fmt.Sprintf("UID【%d】 ID【%s】", id, name));
+		}
+		rows.Close()
+>>>>>>> 09c91192ae28d518b7577c0abb4c51b0ac4debc2
 	}
 }

@@ -5,8 +5,13 @@ import (
 	"strconv"
 	"sync"
 	"github.com/go-redis/redis"
+	"log"
+)
+<<<<<<< HEAD
 	//"time"
 	log "github.com/cihub/seelog"
+=======
+>>>>>>> 09c91192ae28d518b7577c0abb4c51b0ac4debc2
 )
 
 var followService *FollowService
@@ -78,24 +83,22 @@ func (f *FollowService) ProduceOnlyHalfMouth()  {
 
 func (followService *FollowService) Consumer() {
 	waitGroup := &sync.WaitGroup{}
-	valve := make(chan PeerUID, PROCESS_UID_VAVEL)
-	//lock := &sync.RWMutex{}
-	for peerUID := range followService.Traffic {
-		waitGroup.Add(1)
-		WriteLog("d:/consumer.log", fmt.Sprintf("%d", peerUID.UID))
-		valve <- peerUID
+	waitGroup.Add(PROCESS_UID_VAVEL)
+	for i := 0; i < PROCESS_UID_VAVEL; i++ {
 		go func() {
-			//lock.RLock()
-			//defer lock.RUnlock()
-			followService.WriteDbRedis(peerUID, valve)
+			//lock := &sync.RWMutex{}
+			for peerUID := range followService.Traffic {
+				followService.WriteDbRedis(peerUID)
+			}
 			waitGroup.Done()
 		}()
 	}
-	//waitGroup.Wait()
+	waitGroup.Wait()
+	fmt.Println("--------所有用户PeeUID消费完毕------------")
 }
 
 // WriteDbRedis 将单个UID用户写入到Reids中, 更新数据库
-func (followService *FollowService) WriteDbRedis(peerUID PeerUID, valve <-chan PeerUID) {
+func (followService *FollowService) WriteDbRedis(peerUID PeerUID) {
 	uId := peerUID.UID
 	redisSocial, err := GetApp().redismgr.GetRedisByName(REDIS_SOCIAL)
 	CheckErr(err)
@@ -105,6 +108,9 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID, valve <-chan P
 
 	// Fetch UID's Follow List And Storage To Social Redis
 	//fmt.Printf("UID[%d] 关注数量: %d 关注列表: %v \n", uId, len(peerUID.FollowCntSet), peerUID.FollowCntSet)
+	/* if len(peerUID.FollowCntSet) > 0 {
+		WriteLog("d:/rediskey.log", followListKey)
+	} */
 	for _, followUID := range peerUID.FollowCntSet {
 		//WriteLog("/tmp/uid_follow.log", fmt.Sprintf("%v", iFollowUID))
 		followUIDFansCnt := getUIDFansCnt(followUID)
@@ -118,6 +124,9 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID, valve <-chan P
 		}
 	}
 	//fmt.Printf("UID[%d] 粉丝数量: %d 粉丝列表: %v \n", uId, len(peerUID.FansCntSet), peerUID.FansCntSet)
+	/* if len(peerUID.FansCntSet) > 0 {
+		WriteLog("d:/rediskey.log", fansListKey)
+	} */
 	for _, fansUID := range peerUID.FansCntSet {
 		fansUIDFansCnt := getUIDFansCnt(fansUID)
 		item := redis.Z{
@@ -130,7 +139,9 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID, valve <-chan P
 		}
 	}
 
-	//fmt.Printf("UID[%d] 好友数量: %d 好友列表: %v \n", uId, len(peerUID.FriendsCntSet), peerUID.FriendsCntSet)
+	/* if len(peerUID.FriendsCntSet) > 0 {
+		WriteLog("d:/rediskey.log", friendsListKey)
+	} */
 	for _, friendUID := range peerUID.FriendsCntSet {
 		friendsUIDFansCnt := getUIDFansCnt(friendUID)
 		item := redis.Z{
@@ -142,7 +153,6 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID, valve <-chan P
 			fmt.Println(err)
 		}
 	}
-	<- valve
 }
 
 // getUIDFansCnt get user's fans number
