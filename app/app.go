@@ -42,7 +42,7 @@ func NewApp() *App  {
 			redismgr.InitializeRedisList(app.confmgr.RedisConf)
 			return redismgr
 		})()
-		InitLog("")
+		InitLog("conf/log4go.xml")
 	})
 	return app
 }

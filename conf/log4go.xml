@@ -1,7 +1,7 @@
 <seelog type="asynctimer" asyncinterval="50000000" minlevel="debug" maxlevel="error">
     <outputs formatid="main">
         <console />
-        <!--<rollingfile type="date" filename="../log/app.log" namemode="prefix" maxrolls="7" datepattern="2006.01.02"  />-->
+        <rollingfile type="date" filename="log/app.log" namemode="prefix" maxrolls="7" datepattern="2006.01.02"  />
     </outputs>
     <formats>
         <format id="main" format="%Date %Time %Level %Func %Msg%n" />

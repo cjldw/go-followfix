@@ -5,13 +5,8 @@ import (
 	"strconv"
 	"sync"
 	"github.com/go-redis/redis"
-	"log"
-)
-<<<<<<< HEAD
-	//"time"
 	log "github.com/cihub/seelog"
-=======
->>>>>>> 09c91192ae28d518b7577c0abb4c51b0ac4debc2
+	"time"
 )
 
 var followService *FollowService
@@ -62,24 +57,31 @@ func (followService *FollowService) Produce() {
 }
 
 func (f *FollowService) ProduceOnlyHalfMouth()  {
+	defer close(f.Traffic)
 	dbContents, err := GetApp().dbmgr.GetDbByName(DB_CONTENTS)
 	if err != nil {
 		log.Errorf("get db connection error %v", err)
 	}
-	sql := "select id, uid from tx_test limit 10"
+	sql := fmt.Sprintf("select uid from rooms where editTime >= '%s'", time.Now().AddDate(0, 0, -15).Format("2006-01-02 15:04:05"))
+	log.Infof("查询半个月活动的主播: %s", sql)
 	rows, err := dbContents.Query(sql)
 	defer rows.Close()
 	if err != nil {
 		log.Critical(err)
 	}
+	uniqueUIDSet := make(map[int]int)
 	for rows.Next() {
-		var (
-			id int
-			uid int
-		)
-		rows.Scan(&id, &uid)
+		var uid int
+		rows.Scan(&uid)
+		uniqueUIDSet[uid] = uid
 	}
+	fmt.Printf("处理半个月有活动的主播UID: %v\n", uniqueUIDSet)
+	if len(uniqueUIDSet) == 0 {
+		return
+	}
+	f.appendTraficChan(uniqueUIDSet)
 }
+
 
 func (followService *FollowService) Consumer() {
 	waitGroup := &sync.WaitGroup{}
@@ -190,7 +192,7 @@ func getUIDFansCnt(uid int) int {
 
 // CalculateUIDFollowFansCnt 计算单个UID的粉丝数, 关注数, 存放到集合中
 func (followService *FollowService) CalculateUIDFollowFansCnt(inputChan <-chan int, outputChan chan <- PeerUID) {
-	for uId := range inputChan{
+	for uId := range inputChan {
 		dbUsersData, err := GetApp().dbmgr.GetDbByName(DB_USERS_DATA)
 		CheckErr(err)
 		var followSql, fansSql, tableName string
@@ -253,11 +255,20 @@ func (followService *FollowService) processSplitTable(tableName string) {
 		//uniqueUIDSet[anchor] = anchor
 	}
 	fmt.Printf("表 [%s] 共[%d] 个UID \n", tableName, len(uniqueUIDSet))
+	followService.appendTraficChan(uniqueUIDSet)
+}
+
+func (followService *FollowService) appendTraficChan(uniqueUIDSet map[int]int)  {
+	var valve int = len(uniqueUIDSet)
+	if valve > PROCESS_UID_VAVEL {
+		valve = PROCESS_UID_VAVEL
+	}
+	log.Infof("max goroutine numbers: %d", valve)
 	// 限制最大goroutine数量
 	waitGroup := &sync.WaitGroup{}
-	waitGroup.Add(PROCESS_UID_VAVEL)
-	outputChan := make(chan PeerUID, PROCESS_UID_VAVEL)
-	inputChan := make(chan int, PROCESS_UID_VAVEL)
+	waitGroup.Add(valve)
+	outputChan := make(chan PeerUID, valve)
+	inputChan := make(chan int, valve)
 	go func() {
 		for  {
 			if len(uniqueUIDSet) == 0 {
@@ -270,7 +281,7 @@ func (followService *FollowService) processSplitTable(tableName string) {
 			}
 		}
 	}()
-	for i := 0; i < PROCESS_UID_VAVEL ; i++ {
+	for i := 0; i < valve ; i++ {
 		go func() {
 			followService.CalculateUIDFollowFansCnt(inputChan, outputChan)
 			waitGroup.Done()
@@ -286,4 +297,3 @@ func (followService *FollowService) processSplitTable(tableName string) {
 		followService.Traffic <- peerUID
 	}
 }
-

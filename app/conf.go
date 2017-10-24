@@ -4,6 +4,7 @@ import (
 	"strings"
 	"github.com/BurntSushi/toml"
 	"os"
+	log "github.com/cihub/seelog"
 )
 
 // application configure
@@ -53,6 +54,7 @@ func (appConf *AppConf) Load(filename string, forceReload bool)  (*AppConf, erro
 	if err != nil {
 		return  nil, err
 	}
+	log.Infof("使用配置文件: %s", filename)
 	// mark appConf as loaded
 	isLoad = true
 	return appConf, nil

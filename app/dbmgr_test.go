@@ -22,24 +22,23 @@ func TestSeelog(t *testing.T)  {
 
 
 func TestQuery(t *testing.T)  {
+
 	conf := NewAppConf()
 	conf.Load("../conf/app.toml", true)
 	dbmgr := NewDbMgr()
 	dbmgr.InitializeDbList(conf.DbConf)
-	db, err := dbmgr.GetDbByName(DB_USERS_DATA)
+	db, err := dbmgr.GetDbByName(DB_CONTENTS)
 	CheckErr(err)
-	rows, err := db.Query("select id, uid from user_follow")
+	rows, err := db.Query("select uid from rooms")
 	defer rows.Close()
 
 	for rows.Next() {
 		var (
-			id int
 			uid int
 		)
-		rows.Scan(&id)
 		rows.Scan(&uid)
 
-		t.Log(id, uid)
+		t.Log(uid)
 	}
 
 	return
@@ -62,6 +61,5 @@ func TestQuery(t *testing.T)  {
 			fmt.Println(fmt.Sprintf("UID【%d】 ID【%s】", id, name));
 		}
 		rows.Close()
->>>>>>> 09c91192ae28d518b7577c0abb4c51b0ac4debc2
 	}
 }
