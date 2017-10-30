@@ -2,3 +2,92 @@
 2017-10-25 12:22:36 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 100
 2017-10-30 10:47:51 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 读取配置文件UID: [[15 250]]
 2017-10-30 10:47:51 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 2
+2017-10-30 10:59:43 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 读取配置文件UID: [[15 250]]
+2017-10-30 10:59:43 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 2
+2017-10-30 11:01:30 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 读取配置文件UID: [[15 250]]
+2017-10-30 11:01:30 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 添加到TrafficChan: [map[]]
+2017-10-30 11:01:30 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 2
+2017-10-30 11:01:59 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 读取配置文件UID: [[15 250]]
+2017-10-30 11:01:59 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 添加到TrafficChan: [map[]]
+2017-10-30 11:01:59 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList ---------------------------------------------------
+2017-10-30 11:01:59 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 2
+2017-10-30 11:04:14 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 读取配置文件UID: [[15 250]]
+2017-10-30 11:04:14 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 0
+2017-10-30 11:04:14 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 1
+2017-10-30 11:04:14 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 添加到TrafficChan: [map[]]
+2017-10-30 11:04:14 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList ---------------------------------------------------
+2017-10-30 11:04:14 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 2
+2017-10-30 11:06:22 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 读取配置文件UID: [[15 250]]
+2017-10-30 11:06:22 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 添加到TrafficChan: [map[]]
+2017-10-30 11:06:22 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList ---------------------------------------------------
+2017-10-30 11:06:22 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 2
+2017-10-30 11:06:41 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 读取配置文件UID: [[15 250]]
+2017-10-30 11:06:41 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 15
+2017-10-30 11:06:41 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 250
+2017-10-30 11:06:41 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 添加到TrafficChan: [map[]]
+2017-10-30 11:06:41 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList ---------------------------------------------------
+2017-10-30 11:06:41 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 2
+2017-10-30 11:07:18 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 读取配置文件UID: [[15 250]]
+2017-10-30 11:07:18 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 15
+2017-10-30 11:07:18 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 250
+2017-10-30 11:07:18 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 添加到TrafficChan: [map[]]
+2017-10-30 11:07:18 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 添加到TrafficChan22: [map[]]
+2017-10-30 11:07:18 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 2
+2017-10-30 11:08:10 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 读取配置文件UID: [[15 250]]
+2017-10-30 11:08:10 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 15
+2017-10-30 11:08:10 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 250
+2017-10-30 11:08:10 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 添加到TrafficChan: [map[]]
+2017-10-30 11:08:10 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 添加到TrafficChan22: [map[]]
+2017-10-30 11:08:10 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 2
+2017-10-30 11:08:27 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 读取配置文件UID: [[15 250]]
+2017-10-30 11:08:27 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 15
+2017-10-30 11:08:27 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 250
+2017-10-30 11:08:27 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 添加到TrafficChan: [map[13:12]]
+2017-10-30 11:08:27 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 添加到TrafficChan22: [map[13:12]]
+2017-10-30 11:08:27 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 3
+2017-10-30 11:12:16 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 读取配置文件UID: [[15 250]]
+2017-10-30 11:15:28 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 读取配置文件UID: [[15 250]]
+2017-10-30 11:16:04 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 读取配置文件UID: [[15 250]]
+2017-10-30 11:17:11 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 读取配置文件UID: [[15 250]]
+2017-10-30 11:17:11 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 15
+2017-10-30 11:17:11 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 250
+2017-10-30 11:17:11 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 添加到TrafficChan: [map[]]
+2017-10-30 11:17:11 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 添加到TrafficChan22: [map[]]
+2017-10-30 11:18:35 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 读取配置文件UID: [[15 250]]
+2017-10-30 11:18:35 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 15
+2017-10-30 11:18:35 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList typeof int
+2017-10-30 11:18:35 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 250
+2017-10-30 11:18:35 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList typeof int
+2017-10-30 11:18:35 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 添加到TrafficChan: [map[]]
+2017-10-30 11:19:32 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 读取配置文件UID: [15]
+2017-10-30 11:19:32 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 15
+2017-10-30 11:19:32 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 250
+2017-10-30 11:19:32 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 添加到TrafficChan: [map[]]
+2017-10-30 11:20:05 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 读取配置文件UID: [15 250]
+2017-10-30 11:20:05 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 15
+2017-10-30 11:20:05 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 250
+2017-10-30 11:20:05 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 添加到TrafficChan: map[] 
+2017-10-30 11:20:05 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 添加到TrafficChan22: map[] 
+2017-10-30 11:20:05 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 2
+2017-10-30 11:23:31 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 读取配置文件UID: [15 250]
+2017-10-30 11:23:31 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 15
+2017-10-30 11:23:31 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 250
+2017-10-30 11:23:31 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 添加到TrafficChan: map[] 
+2017-10-30 11:23:31 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 添加到TrafficChan: 2 
+2017-10-30 11:23:31 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 添加到TrafficChan22: map[] 
+2017-10-30 11:23:48 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 读取配置文件UID: [15 250]
+2017-10-30 11:23:48 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 15
+2017-10-30 11:23:48 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 250
+2017-10-30 11:23:48 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 添加到TrafficChan: map[] 
+2017-10-30 11:23:48 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 长度: 2 
+2017-10-30 11:25:10 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 读取配置文件UID: [15 250]
+2017-10-30 11:25:10 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 15
+2017-10-30 11:25:10 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 250
+2017-10-30 11:25:10 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 添加到 TrafficChan 长:2  实体:map[] 
+2017-10-30 11:25:10 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 添加到TrafficChan22: map[] 
+2017-10-30 11:25:36 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 读取配置文件UID: [15 250]
+2017-10-30 11:25:36 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 15
+2017-10-30 11:25:36 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 250
+2017-10-30 11:25:36 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 添加到 TrafficChan 长:2  实体:map[] 
+2017-10-30 11:25:36 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 添加到TrafficChan22: map[] 
+2017-10-30 11:25:36 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 2

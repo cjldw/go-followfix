@@ -1,6 +1,6 @@
 name = "follow_data_fix"
 version = "1.0"
-hotfix = true # if true only fix half mouth anchor live changed. if zero fix all data
+hotfix = true
 hotfixUIDList = "15,250"
 [dbConf]
 [dbConf.users_data]

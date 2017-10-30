@@ -85,20 +85,27 @@ func (f *FollowService) ProduceOnlyHalfMouth()  {
 
 func (f *FollowService) ProduceUIDList()  {
 	defer close(f.Traffic)
-	uniqueUIDSet := make(map[int]int)
 	UIDConfString := GetApp().confmgr.HotfixUIDList
 	UIDList := strings.Split(UIDConfString, ",")
-	log.Infof("读取配置文件UID: [%v]", UIDList)
+	log.Infof("读取配置文件UID: %v", UIDList)
 
 	if len(UIDList) == 0 {
 		log.Infof("配置文件UID有误")
 	}
 
-	for intUID := range UIDList {
+	uniqueUIDSet := make(map[int]int)
+	for _, UID := range UIDList {
+		intUID, err := strconv.Atoi(UID)
+		if err != nil {
+			log.Errorf("配置文件UID: %v 配置异常", UID)
+			continue
+		}
+		log.Info(intUID)
 		uniqueUIDSet[intUID] = intUID
 	}
-
+	log.Infof("添加到 TrafficChan 长:%d  实体:%v ", len(uniqueUIDSet), uniqueUIDSet)
 	if len(uniqueUIDSet) > 0 {
+		log.Infof("添加到TrafficChan22: %v ", uniqueUIDSet)
 		f.appendTraficChan(uniqueUIDSet)
 	}
 }

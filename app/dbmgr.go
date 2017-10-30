@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"errors"
 	_ "github.com/go-sql-driver/mysql"
-	"log"
+
 	"sync"
+	log "github.com/cihub/seelog"
 )
 
 type DbMgr struct {
@@ -26,7 +27,7 @@ func (dbMgr *DbMgr) InitializeDbList(dbConfig map[string]DbInst)  {
 	for dbKey, dbConf := range dbConfig {
 		_, ok := dbMgr.dbList[dbKey]
 		if ok { continue }
-		log.Printf("initialize dbconnection %s \n", dbKey)
+		log.Infof("初始化数据连接: %s", dbKey)
 		dbClient, err := sql.Open(dbConf.Driver, dbConf.Dsn)
 		ThrowErr(err)
 		dbClient.SetMaxOpenConns(dbConf.MaxIdleConns)
@@ -48,7 +49,7 @@ func (dbMgr *DbMgr) GetDbByName(dbKey string) (*sql.DB, error) {
 		if !ok {
 			return nil, errors.New(fmt.Sprintf(" 配置【%s】不存在 ！", dbKey))
 		}
-		log.Println("Reconnect MySQL !")
+		log.Info("重连接 MySQL !")
 		newDbClient, err := sql.Open(dbConf.Driver, dbConf.Dsn)
 		fmt.Println(newDbClient)
 		ThrowErr(err)
