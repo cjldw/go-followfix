@@ -1,0 +1,4 @@
+2017-10-25 12:22:36 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceOnlyHalfMouth 查询半个月活动的主播: select uid from rooms where editTime >= '2017-10-10 12:22:36'
+2017-10-25 12:22:36 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 100
+2017-10-30 10:47:51 Info github.com/vvotm/go-followfix/app.(*FollowService).ProduceUIDList 读取配置文件UID: [[15 250]]
+2017-10-30 10:47:51 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 2

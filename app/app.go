@@ -52,7 +52,11 @@ func (app *App) Run()  {
 	wg := &sync.WaitGroup{}
 	followService := NewFollowService()
 	if app.confmgr.Hotfix {
-		RunAsync(wg, followService.ProduceOnlyHalfMouth)
+		if app.confmgr.HotfixUIDList != "" {
+			RunAsync(wg, followService.ProduceUIDList)
+		} else {
+			RunAsync(wg, followService.ProduceOnlyHalfMouth)
+		}
 	} else {
 		RunAsync(wg, followService.Produce)
 	}

@@ -1,23 +1,24 @@
 name = "follow_data_fix"
 version = "1.0"
-hotfix = true # if true only fix half mouth anchor live changed. if zero fix all data
+hotfix = true
+hotfixUIDList = "15,250"
 [dbConf]
 [dbConf.users_data]
 driver = "mysql"
-dsn = "root:111111@tcp(127.0.0.1:3306)/users_data?charset=utf8"
+dsn = "app_zhanqi:xLgU^8hd@tcp(10.62.62.102:3306)/users_data?charset=utf8"
 maxOpenConns = 500
 maxIdleConns = 300
 [dbConf.contents]
 driver = "mysql"
-dsn = "root:111111@tcp(127.0.0.1:3306)/test?charset=utf8"
+dsn = "app_zhanqi:xLgU^8hd@tcp(10.62.62.102:3306)/contents?charset=utf8"
 maxOpenConns = 500
 maxIdleConns = 300
 
 [redisConf]
 [redisConf.social]
-host = "127.0.0.1"
+host = ""
 password = ""
-port = 6379
+port = 0
 db = 0
-socket = ""
+socket = "/dev/shm/social.socket"
 

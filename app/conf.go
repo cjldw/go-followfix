@@ -12,6 +12,7 @@ type AppConf struct {
 	Name string
 	Version string
 	Hotfix bool
+	HotfixUIDList string
 	DbConf map[string] DbInst
 	RedisConf map[string] RedisInst
 }

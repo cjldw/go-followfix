@@ -27,7 +27,8 @@ func (redisMgr *RedisMgr) InitializeRedisList (redisConfMap map[string]RedisInst
 		var redisOpt redis.Options
 		if redisConf.Socket != "" {
 			redisOpt = redis.Options{
-				Network: "unix://"+redisConf.Socket,
+				Network:"unix",
+				Addr: redisConf.Socket,
 				DB: redisConf.Db,
 			}
 		} else {

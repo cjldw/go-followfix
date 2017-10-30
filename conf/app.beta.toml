@@ -1,19 +1,17 @@
 name = "follow_data_fix"
 version = "1.0"
+hotfix = true
+hotfixUIDList = "15,250"
 [dbConf]
 [dbConf.users_data]
 driver = "mysql"
-dsn = "root:111111@tcp(127.0.0.1:3306)/users_data?charset=utf8"
-# 最大连接数
+dsn = "app_zhanqi:xLgU^8hd@tcp(10.62.62.27:3306)/users_data?charset=utf8"
 maxOpenConns = 500
-# 最大空闲连接数
 maxIdleConns = 300
 [dbConf.contents]
 driver = "mysql"
-dsn = "root:111111@tcp(127.0.0.1:3306)/contents?charset=utf8"
-# 最大连接数
+dsn = "app_zhanqi:xLgU^8hd@tcp(10.62.62.27:3306)/contents?charset=utf8"
 maxOpenConns = 500
-# 最大空闲连接数
 maxIdleConns = 300
 
 [redisConf]

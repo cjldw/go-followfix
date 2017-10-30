@@ -7,6 +7,7 @@ import (
 	"github.com/go-redis/redis"
 	log "github.com/cihub/seelog"
 	"time"
+	"strings"
 )
 
 var followService *FollowService
@@ -80,6 +81,26 @@ func (f *FollowService) ProduceOnlyHalfMouth()  {
 		return
 	}
 	f.appendTraficChan(uniqueUIDSet)
+}
+
+func (f *FollowService) ProduceUIDList()  {
+	defer close(f.Traffic)
+	uniqueUIDSet := make(map[int]int)
+	UIDConfString := GetApp().confmgr.HotfixUIDList
+	UIDList := strings.Split(UIDConfString, ",")
+	log.Infof("读取配置文件UID: [%v]", UIDList)
+
+	if len(UIDList) == 0 {
+		log.Infof("配置文件UID有误")
+	}
+
+	for intUID := range UIDList {
+		uniqueUIDSet[intUID] = intUID
+	}
+
+	if len(uniqueUIDSet) > 0 {
+		f.appendTraficChan(uniqueUIDSet)
+	}
 }
 
 
