@@ -66,6 +66,9 @@ func (app *App) Run()  {
 	case "self":
 		log.Info("处理自己关注自己UID")
 		RunAsync(wg, followService.ProcessDirtyData)
+	case "login":
+		log.Info("处理半个月登入的用户")
+		RunAsync(wg, followService.ProcessLoginUID)
 	default:
 		log.Info("默认处理所有数据")
 		RunAsync(wg, followService.Produce)

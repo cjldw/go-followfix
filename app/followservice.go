@@ -83,6 +83,39 @@ func (f *FollowService) ProduceOnlyHalfMouth()  {
 	f.appendTraficChan(uniqueUIDSet)
 }
 
+// ProcessLoginUID
+func (f *FollowService) ProcessLoginUID()  {
+	defer close(f.Traffic)
+	dbLog, err := GetApp().dbmgr.GetDbByName(DB_LOG)
+	if err != nil {
+		log.Errorf("连接数据库%s失败 :%v", DB_LOG, err)
+	}
+
+	var loopNum int = 30000
+	var uniqueUIDSet map[int]int = make(map[int]int)
+	for minId := 1; minId < 21828590 ; minId += loopNum { // 每次处理1w条数据
+		loginSql := fmt.Sprintf("select uid from login_log_1712 where id >= %d and id < %d group by uid",
+			minId, minId + loopNum)
+		rows, err := dbLog.Query(loginSql)
+		if err != nil {
+			log.Infof("查询数据失败: %s 错误: %v", loginSql, err)
+			continue
+		}
+		for rows.Next() {
+			var uid int
+			rows.Scan(&uid)
+			if uid > 0 {
+				uniqueUIDSet[uid] = uid
+			}
+
+		}
+		log.Infof("处理用户登录数据: %d", len(uniqueUIDSet))
+		if len(uniqueUIDSet) > 0 {
+			f.appendTraficChan(uniqueUIDSet)
+		}
+	}
+}
+
 func (f *FollowService) ProduceUIDList()  {
 	defer close(f.Traffic)
 	UIDConfString := GetApp().confmgr.HotfixUIDList

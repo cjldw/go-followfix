@@ -9,6 +9,9 @@ const DB_USERS_DATA  = "users_data"
 // DB_CONTENTS
 const DB_CONTENTS  = "contents"
 
+// DB_LOG
+const DB_LOG  =  "log"
+
 // REDIS_SOCIAL social redis key name
 const REDIS_SOCIAL  =  "social"
 

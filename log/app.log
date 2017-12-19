@@ -716,3 +716,42 @@
 2017-11-02 09:51:05 Info main.TimerUpdate goroutine数量 1028
 
 2017-11-02 09:51:07 Info github.com/vvotm/go-followfix/app.(*FollowService).ProcessDirtyData 删除自己关注自己, 自己粉丝自己完成
+2017-12-19 13:07:35 Info github.com/vvotm/go-followfix/app.(*App).Run 处理半个月登入的用户
+2017-12-19 13:07:37 Info github.com/vvotm/go-followfix/app.(*FollowService).ProcessLoginUID 查询数据失败: select uid from login_log_1712 where id >= 1 and id < 30001 group by uid 错误: Error 1146: Table 'log.login_log_1712' doesn't exist
+2017-12-19 13:07:37 Info github.com/vvotm/go-followfix/app.(*FollowService).ProcessLoginUID 查询数据失败: select uid from login_log_1712 where id >= 30001 and id < 60001 group by uid 错误: Error 1146: Table 'log.login_log_1712' doesn't exist
+2017-12-19 13:07:37 Info github.com/vvotm/go-followfix/app.(*FollowService).ProcessLoginUID 查询数据失败: select uid from login_log_1712 where id >= 60001 and id < 90001 group by uid 错误: Error 1146: Table 'log.login_log_1712' doesn't exist
+2017-12-19 13:07:37 Info github.com/vvotm/go-followfix/app.(*FollowService).ProcessLoginUID 查询数据失败: select uid from login_log_1712 where id >= 90001 and id < 120001 group by uid 错误: Error 1146: Table 'log.login_log_1712' doesn't exist
+2017-12-19 13:07:37 Info github.com/vvotm/go-followfix/app.(*FollowService).ProcessLoginUID 查询数据失败: select uid from login_log_1712 where id >= 120001 and id < 150001 group by uid 错误: Error 1146: Table 'log.login_log_1712' doesn't exist
+2017-12-19 13:07:37 Info github.com/vvotm/go-followfix/app.(*FollowService).ProcessLoginUID 查询数据失败: select uid from login_log_1712 where id >= 150001 and id < 180001 group by uid 错误: Error 1146: Table 'log.login_log_1712' doesn't exist
+2017-12-19 13:07:37 Info github.com/vvotm/go-followfix/app.(*FollowService).ProcessLoginUID 查询数据失败: select uid from login_log_1712 where id >= 180001 and id < 210001 group by uid 错误: Error 1146: Table 'log.login_log_1712' doesn't exist
+2017-12-19 13:07:37 Info github.com/vvotm/go-followfix/app.(*FollowService).ProcessLoginUID 查询数据失败: select uid from login_log_1712 where id >= 210001 and id < 240001 group by uid 错误: Error 1146: Table 'log.login_log_1712' doesn't exist
+2017-12-19 13:12:56 Info github.com/vvotm/go-followfix/app.(*App).Run 处理半个月登入的用户
+2017-12-19 13:12:56 Info github.com/vvotm/go-followfix/app.(*FollowService).ProcessLoginUID 处理用户登录数据: 521
+2017-12-19 13:12:56 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 521
+2017-12-19 13:13:00 Info main.TimerUpdate goroutine数量 1533
+2017-12-19 13:13:04 Info main.TimerUpdate goroutine数量 1269
+2017-12-19 13:13:06 Info github.com/vvotm/go-followfix/app.(*FollowService).ProcessLoginUID 处理用户登录数据: 640
+2017-12-19 13:13:06 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 640
+2017-12-19 13:13:08 Info main.TimerUpdate goroutine数量 1652
+2017-12-19 13:13:12 Info main.TimerUpdate goroutine数量 1049
+2017-12-19 13:13:12 Info github.com/vvotm/go-followfix/app.(*FollowService).ProcessLoginUID 处理用户登录数据: 588
+2017-12-19 13:13:12 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 588
+2017-12-19 13:13:16 Info main.TimerUpdate goroutine数量 1599
+2017-12-19 13:13:18 Info github.com/vvotm/go-followfix/app.(*FollowService).ProcessLoginUID 处理用户登录数据: 0
+2017-12-19 13:13:18 Info github.com/vvotm/go-followfix/app.(*FollowService).ProcessLoginUID 处理用户登录数据: 0
+2017-12-19 13:13:18 Info github.com/vvotm/go-followfix/app.(*FollowService).ProcessLoginUID 处理用户登录数据: 0
+2017-12-19 13:13:18 Info github.com/vvotm/go-followfix/app.(*FollowService).ProcessLoginUID 处理用户登录数据: 0
+2017-12-19 13:13:18 Info github.com/vvotm/go-followfix/app.(*FollowService).ProcessLoginUID 处理用户登录数据: 0
+2017-12-19 13:13:18 Info github.com/vvotm/go-followfix/app.(*FollowService).ProcessLoginUID 处理用户登录数据: 0
+2017-12-19 13:13:18 Info github.com/vvotm/go-followfix/app.(*FollowService).ProcessLoginUID 处理用户登录数据: 0
+2017-12-19 13:13:18 Info github.com/vvotm/go-followfix/app.(*FollowService).ProcessLoginUID 处理用户登录数据: 0
+2017-12-19 13:13:18 Info github.com/vvotm/go-followfix/app.(*FollowService).ProcessLoginUID 处理用户登录数据: 0
+2017-12-19 13:13:19 Info github.com/vvotm/go-followfix/app.(*FollowService).ProcessLoginUID 处理用户登录数据: 0
+2017-12-19 13:13:19 Info github.com/vvotm/go-followfix/app.(*FollowService).ProcessLoginUID 处理用户登录数据: 0
+2017-12-19 13:13:19 Info github.com/vvotm/go-followfix/app.(*FollowService).ProcessLoginUID 处理用户登录数据: 0
+2017-12-19 13:13:19 Info github.com/vvotm/go-followfix/app.(*FollowService).ProcessLoginUID 处理用户登录数据: 0
+2017-12-19 13:13:19 Info github.com/vvotm/go-followfix/app.(*FollowService).ProcessLoginUID 处理用户登录数据: 0
+2017-12-19 13:13:19 Info github.com/vvotm/go-followfix/app.(*FollowService).ProcessLoginUID 处理用户登录数据: 0
+2017-12-19 13:13:19 Info github.com/vvotm/go-followfix/app.(*FollowService).ProcessLoginUID 处理用户登录数据: 0
+2017-12-19 13:13:19 Info github.com/vvotm/go-followfix/app.(*FollowService).ProcessLoginUID 处理用户登录数据: 0
+2017-12-19 13:13:19 Info github.com/vvotm/go-followfix/app.(*FollowService).ProcessLoginUID 处理用户登录数据: 0

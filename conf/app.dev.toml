@@ -1,7 +1,8 @@
 name = "follow_data_fix"
 version = "1.0"
 hotfix = true
-hotfixType = "self"
+# month 半个月开播的主播, login 12月用户登录用户 self 删除自己关注自己用户
+hotfixType = "login"
 hotfixUIDList = "15,250"
 [dbConf]
 [dbConf.users_data]
@@ -12,6 +13,12 @@ maxIdleConns = 300
 [dbConf.contents]
 driver = "mysql"
 dsn = "root:111111@tcp(127.0.0.1:3306)/contents?charset=utf8"
+maxOpenConns = 500
+maxIdleConns = 300
+
+[dbConf.log]
+driver = "mysql"
+dsn = "root:111111@tcp(127.0.0.1:3306)/log?charset=utf8"
 maxOpenConns = 500
 maxIdleConns = 300
 
