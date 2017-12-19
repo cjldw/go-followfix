@@ -755,3 +755,10 @@
 2017-12-19 13:13:19 Info github.com/vvotm/go-followfix/app.(*FollowService).ProcessLoginUID 处理用户登录数据: 0
 2017-12-19 13:13:19 Info github.com/vvotm/go-followfix/app.(*FollowService).ProcessLoginUID 处理用户登录数据: 0
 2017-12-19 13:13:19 Info github.com/vvotm/go-followfix/app.(*FollowService).ProcessLoginUID 处理用户登录数据: 0
+2017-12-19 14:07:06 Info github.com/vvotm/go-followfix/app.(*AppConf).Load 使用配置文件: D:\workspaces\goproj\src\github.com\vvotm\go-followfix\conf\app.dev.toml
+2017-12-19 14:07:06 Info github.com/vvotm/go-followfix/app.(*DbMgr).InitializeDbList 初始化数据连接: users_data
+2017-12-19 14:07:06 Info github.com/vvotm/go-followfix/app.(*DbMgr).InitializeDbList 初始化数据连接: contents
+2017-12-19 14:07:06 Info github.com/vvotm/go-followfix/app.(*DbMgr).InitializeDbList 初始化数据连接: log
+2017-12-19 14:07:06 Info github.com/vvotm/go-followfix/app.(*App).Run 处理半个月登入的用户
+2017-12-19 14:07:06 Info github.com/vvotm/go-followfix/app.(*FollowService).ProcessLoginUID 处理用户登录数据: 521
+2017-12-19 14:07:06 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 521

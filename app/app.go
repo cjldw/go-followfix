@@ -28,6 +28,7 @@ func NewApp() *App  {
 		return app
 	}
 	appOnce.Do(func() {
+		InitLog("conf/log4go.xml")
 		app = &App{isInitialize:true}
 		app.confmgr = (func() *AppConf{
 			appconf, err := NewAppConf().Load(APP_CONFIG_PATH, false)
@@ -45,7 +46,6 @@ func NewApp() *App  {
 			redismgr.InitializeRedisList(app.confmgr.RedisConf)
 			return redismgr
 		})()
-		InitLog("conf/log4go.xml")
 	})
 	return app
 }
