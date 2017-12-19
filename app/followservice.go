@@ -92,8 +92,8 @@ func (f *FollowService) ProcessLoginUID()  {
 	}
 
 	var loopNum int = 30000
-	var uniqueUIDSet map[int]int = make(map[int]int)
 	for minId := 1; minId < 21828590 ; minId += loopNum { // 每次处理1w条数据
+		var uniqueUIDSet map[int]int = make(map[int]int)
 		loginSql := fmt.Sprintf("select uid from login_log_1712 where id >= %d and id < %d group by uid",
 			minId, minId + loopNum)
 		rows, err := dbLog.Query(loginSql)
