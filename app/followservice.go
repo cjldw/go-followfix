@@ -54,7 +54,7 @@ func (followService *FollowService) Produce() {
 	}
 	wg.Wait()
 	close(followService.Traffic)
-	fmt.Println("--------所有用户PeeUID构造完毕------------")
+	log.Info("--------所有用户PeeUID构造完毕------------")
 }
 
 func (f *FollowService) ProduceOnlyHalfMouth()  {
@@ -76,7 +76,7 @@ func (f *FollowService) ProduceOnlyHalfMouth()  {
 		rows.Scan(&uid)
 		uniqueUIDSet[uid] = uid
 	}
-	fmt.Printf("处理半个月有活动的主播UID: %v\n", uniqueUIDSet)
+	log.Infof("处理半个月有活动的主播UID: %v\n", uniqueUIDSet)
 	if len(uniqueUIDSet) == 0 {
 		return
 	}
@@ -110,6 +110,58 @@ func (f *FollowService) ProduceUIDList()  {
 	}
 }
 
+func (f *FollowService) ProcessDirtyData()  {
+	defer close(f.Traffic)
+	wg := &sync.WaitGroup{}
+	for table := 0; table < USER_FOLLOW_SPLIT_TABLE_NUM; table++ {
+		tableName := USER_FOLLOW_TABLE_PREFIX + strconv.Itoa(table)
+		log.Info(tableName)
+		wg.Add(1)
+		go (func() {
+			f.deleteDirtyData(tableName)
+			wg.Done()
+		})()
+	}
+	wg.Wait()
+	log.Info("删除自己关注自己, 自己粉丝自己完成")
+}
+
+func (f *FollowService) deleteDirtyData(tableName string)  {
+	dbContents, err := GetApp().dbmgr.GetDbByName(DB_USERS_DATA)
+	CheckErr(err)
+	const PROCESS_MAX_ROW  = 100000;
+	maxIdSql := fmt.Sprintf("select max(id) from %s ", tableName)
+	log.Info(maxIdSql)
+	var maxId int
+	dbContents.QueryRow(maxIdSql).Scan(&maxId)
+	log.Infof("max id %d", maxId)
+
+	socialRedis, err := GetApp().redismgr.GetRedisByName(REDIS_SOCIAL)
+	CheckErr(err)
+
+	for offset := PROCESS_MAX_ROW; offset <= maxId; offset += PROCESS_MAX_ROW  {
+		UIDSql := fmt.Sprintf("select uid from %s where id <= %d group by uid", tableName, offset)
+		log.Info(UIDSql)
+		UIDResult, err := dbContents.Query(UIDSql)
+		CheckErr(err)
+		for UIDResult.Next() {
+			var uId int
+			UIDResult.Scan(&uId)
+			if uId == 0 {
+				continue
+			}
+
+			friendKey := fmt.Sprintf("%s%d", FRIEND_SYSTEM_USER_FRIENDS, uId)
+			followKey := fmt.Sprintf("%s%d", FRIEND_SYSTEM_USER_FOLLOW, uId)
+			fansKey := fmt.Sprintf("%s%d", FRIEND_SYSTEM_USER_FANS, uId)
+
+			socialRedis.ZRem(friendKey, uId)
+			socialRedis.ZRem(followKey, uId)
+			socialRedis.ZRem(fansKey, uId)
+		}
+	}
+
+}
 
 func (followService *FollowService) Consumer() {
 	waitGroup := &sync.WaitGroup{}
@@ -124,7 +176,7 @@ func (followService *FollowService) Consumer() {
 		}()
 	}
 	waitGroup.Wait()
-	fmt.Println("--------所有用户PeeUID消费完毕------------")
+	log.Info("--------所有用户PeeUID消费完毕------------")
 }
 
 // WriteDbRedis 将单个UID用户写入到Reids中, 更新数据库
@@ -150,7 +202,7 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID) {
 		}
 		err := redisSocial.ZAdd(followListKey, item).Err()
 		if err != nil {
-			fmt.Println(err)
+			log.Error(err)
 		}
 	}
 	//fmt.Printf("UID[%d] 粉丝数量: %d 粉丝列表: %v \n", uId, len(peerUID.FansCntSet), peerUID.FansCntSet)
@@ -165,7 +217,7 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID) {
 		}
 		err := redisSocial.ZAdd(fansListKey, item).Err()
 		if err != nil {
-			fmt.Println(err)
+			log.Error(err)
 		}
 	}
 
@@ -180,7 +232,7 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID) {
 		}
 		err := redisSocial.ZAdd(friendsListKey, item).Err()
 		if err != nil {
-			fmt.Println(err)
+			log.Error(err)
 		}
 	}
 }
@@ -271,7 +323,7 @@ func (followService *FollowService) processSplitTable(tableName string) {
 	dbUsersData, err := GetApp().dbmgr.GetDbByName(DB_USERS_DATA)
 	CheckErr(err)
 	sql := fmt.Sprintf("select uid, anchor from %s where  status = 1 and isFriends = 0 and isAnchor = 1", tableName)
-	fmt.Println(sql)
+	log.Info(sql)
 	dbRows, err := dbUsersData.Query(sql)
 	defer dbRows.Close()
 	CheckErr(err)
@@ -282,7 +334,7 @@ func (followService *FollowService) processSplitTable(tableName string) {
 		uniqueUIDSet[uid] = uid
 		//uniqueUIDSet[anchor] = anchor
 	}
-	fmt.Printf("表 [%s] 共[%d] 个UID \n", tableName, len(uniqueUIDSet))
+	log.Infof("表 [%s] 共[%d] 个UID \n", tableName, len(uniqueUIDSet))
 	followService.appendTraficChan(uniqueUIDSet)
 }
 

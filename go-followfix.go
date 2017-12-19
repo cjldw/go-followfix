@@ -28,7 +28,7 @@ func TimerUpdate() {
 			//打印统计信息
 			//postesp, postcnt := PostSvrMgrIns().GetAverage()
 			//log4go.Info("Average post:%v--%v", postesp, postcnt)
-			log.Infof("goroutine数量 %d\n", runtime.NumGoroutine())
+			log.Infof("goroutine数量 %d", runtime.NumGoroutine())
 		}
 	}
 }

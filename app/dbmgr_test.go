@@ -29,7 +29,13 @@ func TestQuery(t *testing.T)  {
 	dbmgr.InitializeDbList(conf.DbConf)
 	db, err := dbmgr.GetDbByName(DB_CONTENTS)
 	CheckErr(err)
-	rows, err := db.Query("select uid from rooms")
+	var uid int
+	var title string
+	db.QueryRow("select max(uid) as maxId, title from rooms limit 1").Scan(&uid, &title)
+	t.Log(uid, title)
+
+	return
+	rows, err := db.Query("select uid from rooms limit 1")
 	defer rows.Close()
 
 	for rows.Next() {

@@ -1,6 +1,7 @@
 name = "follow_data_fix"
 version = "1.0"
 hotfix = true
+hotfixType = "self"
 hotfixUIDList = "15,250"
 [dbConf]
 [dbConf.users_data]

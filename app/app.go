@@ -1,6 +1,9 @@
 package app
 
-import "sync"
+import (
+	"sync"
+	log "github.com/cihub/seelog"
+)
 
 type App struct {
 	confmgr *AppConf
@@ -51,13 +54,20 @@ func NewApp() *App  {
 func (app *App) Run()  {
 	wg := &sync.WaitGroup{}
 	followService := NewFollowService()
-	if app.confmgr.Hotfix {
+	switch app.confmgr.HotfixType {
+	case "mounth":
+		log.Info("处理半个月活动UID")
+		RunAsync(wg, followService.ProduceOnlyHalfMouth)
+	case "uid":
+		log.Infof("处理UID: %s", app.confmgr.HotfixUIDList)
 		if app.confmgr.HotfixUIDList != "" {
 			RunAsync(wg, followService.ProduceUIDList)
-		} else {
-			RunAsync(wg, followService.ProduceOnlyHalfMouth)
 		}
-	} else {
+	case "self":
+		log.Info("处理自己关注自己UID")
+		RunAsync(wg, followService.ProcessDirtyData)
+	default:
+		log.Info("默认处理所有数据")
 		RunAsync(wg, followService.Produce)
 	}
 	RunAsync(wg, followService.Consumer)
