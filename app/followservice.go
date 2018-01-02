@@ -203,7 +203,7 @@ func (followService *FollowService) Consumer() {
 	} */
 
 	waitGroup := &sync.WaitGroup{}
-	waitGroup.Add(100)
+	waitGroup.Add(PROCESS_UID_VAVEL)
 	for i := 0; i < PROCESS_UID_VAVEL; i++ {
 		go func() {
 			//lock := &sync.RWMutex{}
