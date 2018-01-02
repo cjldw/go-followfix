@@ -222,8 +222,12 @@ func (followService *FollowService) Consumer() {
 // WriteDbRedis 将单个UID用户写入到Reids中, 更新数据库
 func (followService *FollowService) WriteDbRedis(peerUID PeerUID) {
 	uId := peerUID.UID
+	ClearUserfollow(uId) // 清空数据在修复
 	redisSocial, err := GetApp().redismgr.GetRedisByName(REDIS_SOCIAL)
 	CheckErr(err)
+	redisOld, err := GetApp().redismgr.GetRedisByName(REDIS_OLD)
+	CheckErr(err)
+
 	var followListKey string = fmt.Sprintf("%s%d", FRIEND_SYSTEM_USER_FOLLOW, uId)
 	var fansListKey string = fmt.Sprintf("%s%d", FRIEND_SYSTEM_USER_FANS, uId)
 	var friendsListKey string = fmt.Sprintf("%s%d", FRIEND_SYSTEM_USER_FRIENDS, uId)
@@ -251,7 +255,7 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID) {
 			Member: followUID,
 		}
 		// 老的关注集合处理
-		err = redisSocial.ZAdd(oldFollowList, followItem).Err()
+		err = redisOld.ZAdd(oldFollowList, followItem).Err()
 		fmt.Printf("老关注: %s 数据: %v 状态: %v\n",oldFollowList, followItem, err)
 		if err != nil {
 			log.Error(err)
@@ -278,7 +282,7 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID) {
 			Score: nowTime,
 			Member: uId,
 		}
-		err = redisSocial.ZAdd(oldFansListKey, fansItem).Err()
+		err = redisOld.ZAdd(oldFansListKey, fansItem).Err()
 		fmt.Printf("老粉丝: %s 数据: %v 状态: %v\n", oldFansListKey, fansItem, err)
 		if err != nil {
 			log.Error(err)
@@ -316,6 +320,7 @@ func getUIDFansCnt(uid int) int {
 		}
 		return iFansCnt
 	}
+
 	var sql string
 	dbUserData, err := GetApp().dbmgr.GetDbByName(DB_USERS_DATA)
 	CheckErr(err)
@@ -332,6 +337,31 @@ func getUIDFansCnt(uid int) int {
 	//	WriteLog("/tmp/time.log", fmt.Sprintf("粉丝时间： %v", time.Since(now)))
 	//fmt.Printf("UID[%d]粉丝数量: %v \n", uid, time.Since(now))
 	return fansCnt
+}
+
+func ClearUserfollow(uid int)  {
+	redisSocial, err := GetApp().redismgr.GetRedisByName(REDIS_SOCIAL)
+	CheckErr(err)
+	clearKey := fmt.Sprintf("clear_%d", uid)
+	isExists := redisSocial.HExists(TMP_UID_CLEAR, clearKey).Val()
+	if  isExists {
+		return
+	}
+	followKey := fmt.Sprintf("%s%d", FRIEND_SYSTEM_USER_FOLLOW, uid)
+	fansKey := fmt.Sprintf("%s%d", FRIEND_SYSTEM_USER_FANS, uid)
+	friendKey := fmt.Sprintf("%s%d", FRIEND_SYSTEM_USER_FRIENDS, uid)
+
+	err = redisSocial.Del(followKey, fansKey, friendKey).Err()
+	log.Infof("删除数据%s,%s, %s 状态:%v", followKey, fansKey, friendKey, err)
+
+	redisOld, err := GetApp().redismgr.GetRedisByName(REDIS_OLD)
+	CheckErr(err)
+	oldFollowKey := fmt.Sprintf(USER_FOLLOW_LIST, uid)
+	oldFansKey := fmt.Sprintf(USER_FANS_LIST, uid)
+
+	err = redisOld.Del(oldFollowKey, oldFansKey).Err()
+	log.Infof("删除老关注数据%s,%s, %s 状态:%v", oldFansKey, oldFollowKey, err)
+	redisSocial.HSet(TMP_UID_CLEAR, clearKey, 1)
 }
 
 // CalculateUIDFollowFansCnt 计算单个UID的粉丝数, 关注数, 存放到集合中
@@ -407,8 +437,7 @@ func (followService *FollowService) appendTraficChan(uniqueUIDSet map[int]int)  
 	if valve > PROCESS_UID_VAVEL {
 		valve = PROCESS_UID_VAVEL
 	}
-	log.Infof("max goroutine numbers: %d", valve)
-	// 限制最大goroutine数量
+	log.Infof("限制最大goroutine数量: %d", valve)
 	waitGroup := &sync.WaitGroup{}
 	waitGroup.Add(valve)
 	outputChan := make(chan PeerUID, valve)

@@ -8,5 +8,6 @@ func InitLog(logConfigFile string)  {
 	ThrowErr(err)
 	logger, err := log.LoggerFromConfigAsFile(filename)
 	ThrowErr(err)
-	log.UseLogger(logger)
+	//log.UseLogger(logger)
+	log.ReplaceLogger(logger)
 }

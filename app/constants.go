@@ -15,6 +15,8 @@ const DB_LOG  =  "log"
 // REDIS_SOCIAL social redis key name
 const REDIS_SOCIAL  =  "social"
 
+const REDIS_OLD  =  "old"
+
 // USER_FOLLOW_TABLE_PREFIX
 const USER_FOLLOW_TABLE_PREFIX  = "user_follow_"
 
@@ -39,6 +41,8 @@ const USER_FANS_LIST  =  "user:follow:%d"
 
 // TMP_UID_FANS_NUM storage uid fans number temporary
 const TMP_UID_FANS_NUM  = "tmp:uid:fans:num"
+
+const TMP_UID_CLEAR  =  "tmp:uid:clear"
 
 // PROCESS_UID_VAVEL goroutine 阀门
 const PROCESS_UID_VAVEL  =  50
