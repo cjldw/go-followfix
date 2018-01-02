@@ -352,7 +352,7 @@ func ClearUserfollow(uid int)  {
 	friendKey := fmt.Sprintf("%s%d", FRIEND_SYSTEM_USER_FRIENDS, uid)
 
 	err = redisSocial.Del(followKey, fansKey, friendKey).Err()
-	log.Infof("删除数据%s,%s, %s 状态:%v", followKey, fansKey, friendKey, err)
+	fmt.Printf("删除数据%s,%s, %s 状态:%v", followKey, fansKey, friendKey, err)
 
 	redisOld, err := GetApp().redismgr.GetRedisByName(REDIS_OLD)
 	CheckErr(err)
@@ -360,7 +360,7 @@ func ClearUserfollow(uid int)  {
 	oldFansKey := fmt.Sprintf(USER_FANS_LIST, uid)
 
 	err = redisOld.Del(oldFollowKey, oldFansKey).Err()
-	log.Infof("删除老关注数据%s,%s, %s 状态:%v", oldFansKey, oldFollowKey, err)
+	fmt.Printf("删除老关注数据%s,%s,状态:%v", oldFansKey, oldFollowKey, err)
 	redisSocial.HSet(TMP_UID_CLEAR, clearKey, 1)
 }
 
@@ -396,7 +396,7 @@ func (followService *FollowService) CalculateUIDFollowFansCnt(inputChan <-chan i
 			}
 			fansRows.Close()
 
-			friendsSql := fmt.Sprintf("select uid from %s where uid = %d and isFriends = 1 and status = 1",
+			friendsSql := fmt.Sprintf("select anchor from %s where uid = %d and isFriends = 1 and status = 1",
 				tableName, uId)
 			friendsRows, err := dbUsersData.Query(friendsSql)
 			CheckErr(err)
