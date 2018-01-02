@@ -131,7 +131,7 @@ func (f *FollowService) ProduceUIDList()  {
 	for _, UID := range UIDList {
 		intUID, err := strconv.Atoi(UID)
 		if err != nil {
-			log.Errorf("配置文件UID: %v 配置异常", UID)
+			fmt.Printf("UID转整型错误:%v\n", err)
 			continue
 		}
 		log.Info(intUID)
