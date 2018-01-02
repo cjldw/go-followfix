@@ -33,6 +33,10 @@ const FRIEND_SYSTEM_USER_FANS = "friend:system:user:fans:"
 // Value is UID and Score is UID's Fans Number
 const FRIEND_SYSTEM_USER_FRIENDS = "friend:system:user:friends:"
 
+const USER_FOLLOW_LIST =  "user:%d:follow"
+
+const USER_FANS_LIST  =  "user:follow:%d"
+
 // TMP_UID_FANS_NUM storage uid fans number temporary
 const TMP_UID_FANS_NUM  = "tmp:uid:fans:num"
 

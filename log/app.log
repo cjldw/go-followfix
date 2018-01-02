@@ -762,3 +762,379 @@
 2017-12-19 14:07:06 Info github.com/vvotm/go-followfix/app.(*App).Run 处理半个月登入的用户
 2017-12-19 14:07:06 Info github.com/vvotm/go-followfix/app.(*FollowService).ProcessLoginUID 处理用户登录数据: 521
 2017-12-19 14:07:06 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 521
+2017-12-29 09:34:56 Info github.com/vvotm/go-followfix/app.(*AppConf).Load 使用配置文件: D:\workspaces\goproj\src\github.com\vvotm\go-followfix\conf\app.dev.toml
+2017-12-29 09:34:56 Info github.com/vvotm/go-followfix/app.(*DbMgr).InitializeDbList 初始化数据连接: users_data
+2017-12-29 09:34:57 Info github.com/vvotm/go-followfix/app.(*DbMgr).InitializeDbList 初始化数据连接: contents
+2017-12-29 09:34:57 Info github.com/vvotm/go-followfix/app.(*DbMgr).InitializeDbList 初始化数据连接: log
+2017-12-29 09:34:57 Info github.com/vvotm/go-followfix/app.(*App).Run 默认处理所有数据
+2017-12-29 09:34:58 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable select uid, anchor from user_follow_0 where  status = 1 and isFriends = 0 and isAnchor = 1
+2017-12-29 09:34:58 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable select uid, anchor from user_follow_9 where  status = 1 and isFriends = 0 and isAnchor = 1
+2017-12-29 09:34:58 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable select uid, anchor from user_follow_7 where  status = 1 and isFriends = 0 and isAnchor = 1
+2017-12-29 09:34:58 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable select uid, anchor from user_follow_6 where  status = 1 and isFriends = 0 and isAnchor = 1
+2017-12-29 09:34:58 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable select uid, anchor from user_follow_3 where  status = 1 and isFriends = 0 and isAnchor = 1
+2017-12-29 09:34:58 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable select uid, anchor from user_follow_8 where  status = 1 and isFriends = 0 and isAnchor = 1
+2017-12-29 09:34:58 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable select uid, anchor from user_follow_4 where  status = 1 and isFriends = 0 and isAnchor = 1
+2017-12-29 09:34:58 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable select uid, anchor from user_follow_2 where  status = 1 and isFriends = 0 and isAnchor = 1
+2017-12-29 09:34:58 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable select uid, anchor from user_follow_1 where  status = 1 and isFriends = 0 and isAnchor = 1
+2017-12-29 09:34:58 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable select uid, anchor from user_follow_5 where  status = 1 and isFriends = 0 and isAnchor = 1
+2017-12-29 09:35:05 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable 表 [user_follow_9] 共[32471] 个UID 
+
+2017-12-29 09:35:05 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 1000
+2017-12-29 09:35:05 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable 表 [user_follow_5] 共[32354] 个UID 
+
+2017-12-29 09:35:05 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 1000
+2017-12-29 09:35:09 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable 表 [user_follow_6] 共[32289] 个UID 
+
+2017-12-29 09:35:09 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 1000
+2017-12-29 09:35:09 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable 表 [user_follow_3] 共[32124] 个UID 
+
+2017-12-29 09:35:09 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 1000
+2017-12-29 09:35:09 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable 表 [user_follow_8] 共[32396] 个UID 
+
+2017-12-29 09:35:09 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 1000
+2017-12-29 09:35:09 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable 表 [user_follow_1] 共[32366] 个UID 
+
+2017-12-29 09:35:09 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 1000
+2017-12-29 09:35:09 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable 表 [user_follow_4] 共[32260] 个UID 
+
+2017-12-29 09:35:09 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 1000
+2017-12-29 09:35:09 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable 表 [user_follow_2] 共[32637] 个UID 
+
+2017-12-29 09:35:09 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 1000
+2017-12-29 09:35:09 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable 表 [user_follow_7] 共[32449] 个UID 
+
+2017-12-29 09:35:09 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 1000
+2017-12-29 09:35:14 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable 表 [user_follow_0] 共[32422] 个UID 
+
+2017-12-29 09:35:14 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 1000
+2017-12-29 09:35:27 Info main.TimerUpdate goroutine数量 11042
+2017-12-29 09:35:57 Info main.TimerUpdate goroutine数量 11041
+2017-12-29 09:36:05 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:59808->127.0.0.1:6379: i/o timeout
+2017-12-29 09:36:05 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:59807->127.0.0.1:6379: i/o timeout
+2017-12-29 09:36:05 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:59801->127.0.0.1:6379: i/o timeout
+2017-12-29 09:36:05 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:59811->127.0.0.1:6379: i/o timeout
+2017-12-29 09:36:05 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:59795->127.0.0.1:6379: i/o timeout
+2017-12-29 09:36:05 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:59803->127.0.0.1:6379: i/o timeout
+2017-12-29 09:36:05 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:59796->127.0.0.1:6379: i/o timeout
+2017-12-29 09:36:05 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:59791->127.0.0.1:6379: i/o timeout
+2017-12-29 09:36:05 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:59798->127.0.0.1:6379: i/o timeout
+2017-12-29 09:36:05 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:59804->127.0.0.1:6379: i/o timeout
+2017-12-29 09:36:05 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:59788->127.0.0.1:6379: i/o timeout
+2017-12-29 09:36:05 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:59781->127.0.0.1:6379: i/o timeout
+2017-12-29 09:36:05 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:59814->127.0.0.1:6379: i/o timeout
+2017-12-29 09:36:05 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:59790->127.0.0.1:6379: i/o timeout
+2017-12-29 09:36:05 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:59812->127.0.0.1:6379: i/o timeout
+2017-12-29 09:36:09 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:36:09 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:36:09 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:36:09 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:36:09 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:36:09 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:36:09 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:36:12 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:36:13 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:36:13 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:36:13 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:36:13 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:36:13 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:36:13 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:36:13 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:36:14 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:36:14 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:36:14 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:36:14 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:36:14 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:36:14 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:36:15 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:36:15 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:36:16 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:36:16 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:36:16 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:36:16 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:59943->127.0.0.1:6379: i/o timeout
+2017-12-29 09:36:16 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:59942->127.0.0.1:6379: i/o timeout
+2017-12-29 09:36:27 Info main.TimerUpdate goroutine数量 11041
+2017-12-29 09:36:57 Info main.TimerUpdate goroutine数量 11041
+2017-12-29 09:37:20 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:59960->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:20 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:59950->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:20 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:59957->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:20 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:59987->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:20 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:59962->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:20 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:59978->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:20 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:59972->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:20 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:59971->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:20 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:59974->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:20 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:59951->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:20 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:59953->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:20 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:59959->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:20 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:59965->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:20 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:59977->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:24 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:24 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:24 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:25 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:25 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:26 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:26 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:26 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:26 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:26 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:26 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:26 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:26 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:26 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:26 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:26 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:26 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:26 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:26 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:26 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:26 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:26 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:26 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:27 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:27 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:27 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:27 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:27 Info main.TimerUpdate goroutine数量 11043
+2017-12-29 09:37:27 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:27 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:60108->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:28 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:60107->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:28 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:60105->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:28 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:60106->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:28 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:28 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:28 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:28 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:28 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:28 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:28 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:28 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:28 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:28 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:29 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:29 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:29 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:29 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:29 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:29 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:29 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:29 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:29 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:29 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:29 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:29 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:29 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:29 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:29 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:29 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:29 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:29 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:29 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:29 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:60127->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:60126->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:30 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis redis: connection pool timeout
+2017-12-29 09:37:31 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:60130->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:31 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:60135->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:31 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:60144->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:31 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:60138->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:31 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:60148->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:31 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:60154->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:31 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:60152->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:31 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:60157->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:31 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:60153->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:31 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:60155->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:31 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:60158->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:31 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:60162->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:31 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:60163->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:31 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:60164->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:31 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:60165->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:38 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:60177->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:38 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:60156->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:38 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:60187->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:38 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:60205->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:38 Error github.com/vvotm/go-followfix/app.(*FollowService).WriteDbRedis read tcp 127.0.0.1:60192->127.0.0.1:6379: i/o timeout
+2017-12-29 09:37:57 Info main.TimerUpdate goroutine数量 11041
+2017-12-29 09:38:27 Info main.TimerUpdate goroutine数量 11041
+2017-12-29 09:38:57 Info main.TimerUpdate goroutine数量 11041
+2017-12-29 09:39:27 Info main.TimerUpdate goroutine数量 11041
+2017-12-29 09:39:57 Info main.TimerUpdate goroutine数量 11041
+2017-12-29 09:40:27 Info main.TimerUpdate goroutine数量 11042
+2017-12-29 09:40:57 Info main.TimerUpdate goroutine数量 11041
+2017-12-29 09:41:27 Info main.TimerUpdate goroutine数量 11041
+2017-12-29 09:41:57 Info main.TimerUpdate goroutine数量 11041
+2017-12-29 09:42:27 Info main.TimerUpdate goroutine数量 11041
+2017-12-29 09:42:57 Info main.TimerUpdate goroutine数量 11041
+2017-12-29 09:43:27 Info main.TimerUpdate goroutine数量 11041
+2017-12-29 09:43:57 Info main.TimerUpdate goroutine数量 11041
+2017-12-29 09:44:27 Info main.TimerUpdate goroutine数量 11041
+2017-12-29 09:44:57 Info main.TimerUpdate goroutine数量 11042
+2017-12-29 09:45:27 Info main.TimerUpdate goroutine数量 11041
+2017-12-29 09:45:57 Info main.TimerUpdate goroutine数量 11041
+2017-12-29 09:46:27 Info main.TimerUpdate goroutine数量 11041
+2017-12-29 09:46:57 Info main.TimerUpdate goroutine数量 11041
+2017-12-29 09:47:27 Info main.TimerUpdate goroutine数量 11041
+2017-12-29 09:47:57 Info main.TimerUpdate goroutine数量 11041
+2017-12-29 09:48:27 Info main.TimerUpdate goroutine数量 11041
+2017-12-29 09:48:57 Info main.TimerUpdate goroutine数量 11041
+2017-12-29 09:49:27 Info main.TimerUpdate goroutine数量 11041
+2017-12-29 09:49:57 Info main.TimerUpdate goroutine数量 11041
+2017-12-29 10:08:41 Info github.com/vvotm/go-followfix/app.(*AppConf).Load 使用配置文件: D:\workspaces\goproj\src\github.com\vvotm\go-followfix\conf\app.dev.toml
+2017-12-29 10:08:41 Info github.com/vvotm/go-followfix/app.(*DbMgr).InitializeDbList 初始化数据连接: users_data
+2017-12-29 10:08:42 Info github.com/vvotm/go-followfix/app.(*DbMgr).InitializeDbList 初始化数据连接: contents
+2017-12-29 10:08:42 Info github.com/vvotm/go-followfix/app.(*DbMgr).InitializeDbList 初始化数据连接: log
+2017-12-29 10:08:42 Info github.com/vvotm/go-followfix/app.(*App).Run 默认处理所有数据
+2017-12-29 10:08:42 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable select uid, anchor from user_follow_6 where  status = 1 and isFriends = 0 and isAnchor = 1
+2017-12-29 10:08:42 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable select uid, anchor from user_follow_9 where  status = 1 and isFriends = 0 and isAnchor = 1
+2017-12-29 10:08:42 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable select uid, anchor from user_follow_5 where  status = 1 and isFriends = 0 and isAnchor = 1
+2017-12-29 10:08:42 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable select uid, anchor from user_follow_0 where  status = 1 and isFriends = 0 and isAnchor = 1
+2017-12-29 10:08:42 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable select uid, anchor from user_follow_7 where  status = 1 and isFriends = 0 and isAnchor = 1
+2017-12-29 10:08:42 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable select uid, anchor from user_follow_1 where  status = 1 and isFriends = 0 and isAnchor = 1
+2017-12-29 10:08:42 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable select uid, anchor from user_follow_3 where  status = 1 and isFriends = 0 and isAnchor = 1
+2017-12-29 10:08:42 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable select uid, anchor from user_follow_4 where  status = 1 and isFriends = 0 and isAnchor = 1
+2017-12-29 10:08:42 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable select uid, anchor from user_follow_2 where  status = 1 and isFriends = 0 and isAnchor = 1
+2017-12-29 10:08:42 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable select uid, anchor from user_follow_8 where  status = 1 and isFriends = 0 and isAnchor = 1
+2017-12-29 10:08:42 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable 表 [user_follow_1] 共[32366] 个UID 
+
+2017-12-29 10:08:42 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 1000
+2017-12-29 10:08:42 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable 表 [user_follow_5] 共[32354] 个UID 
+
+2017-12-29 10:08:42 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 1000
+2017-12-29 10:08:42 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable 表 [user_follow_3] 共[32124] 个UID 
+
+2017-12-29 10:08:42 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 1000
+2017-12-29 10:08:42 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable 表 [user_follow_8] 共[32396] 个UID 
+
+2017-12-29 10:08:42 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 1000
+2017-12-29 10:08:42 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable 表 [user_follow_9] 共[32471] 个UID 
+
+2017-12-29 10:08:42 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 1000
+2017-12-29 10:08:42 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable 表 [user_follow_2] 共[32637] 个UID 
+
+2017-12-29 10:08:42 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 1000
+2017-12-29 10:08:42 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable 表 [user_follow_0] 共[32422] 个UID 
+
+2017-12-29 10:08:42 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 1000
+2017-12-29 10:08:42 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable 表 [user_follow_4] 共[32260] 个UID 
+
+2017-12-29 10:08:42 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 1000
+2017-12-29 10:08:42 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable 表 [user_follow_7] 共[32449] 个UID 
+
+2017-12-29 10:08:42 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 1000
+2017-12-29 10:08:46 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable 表 [user_follow_6] 共[32289] 个UID 
+
+2017-12-29 10:08:46 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 1000
+2017-12-29 10:09:12 Info main.TimerUpdate goroutine数量 10041
+2017-12-29 10:09:42 Info main.TimerUpdate goroutine数量 10041
+2017-12-29 10:10:12 Info main.TimerUpdate goroutine数量 10041
+2017-12-29 10:10:42 Info main.TimerUpdate goroutine数量 10043
+2017-12-29 10:11:12 Info main.TimerUpdate goroutine数量 10041
+2017-12-29 10:11:42 Info main.TimerUpdate goroutine数量 10041
+2017-12-29 10:12:12 Info main.TimerUpdate goroutine数量 10041
+2017-12-29 10:12:42 Info main.TimerUpdate goroutine数量 10041
+2017-12-29 10:13:12 Info main.TimerUpdate goroutine数量 10041
+2017-12-29 10:13:42 Info main.TimerUpdate goroutine数量 10041
+2017-12-29 10:14:12 Info main.TimerUpdate goroutine数量 10041
+2017-12-29 10:14:42 Info main.TimerUpdate goroutine数量 10041
+2017-12-29 10:15:12 Info main.TimerUpdate goroutine数量 10041
+2017-12-29 10:15:42 Info main.TimerUpdate goroutine数量 10041
+2017-12-29 10:16:12 Info main.TimerUpdate goroutine数量 10041
+2017-12-29 10:16:42 Info main.TimerUpdate goroutine数量 10041
+2017-12-29 10:17:12 Info main.TimerUpdate goroutine数量 10041
+2017-12-29 10:17:42 Info main.TimerUpdate goroutine数量 10041
+2017-12-29 10:18:12 Info main.TimerUpdate goroutine数量 10041
+2017-12-29 10:18:42 Info main.TimerUpdate goroutine数量 10041
+2017-12-29 10:19:12 Info main.TimerUpdate goroutine数量 10041
+2017-12-29 10:19:42 Info main.TimerUpdate goroutine数量 10041
+2017-12-29 10:20:12 Info main.TimerUpdate goroutine数量 10041
+2017-12-29 10:20:42 Info main.TimerUpdate goroutine数量 10041
+2017-12-29 10:21:12 Info main.TimerUpdate goroutine数量 10041
+2017-12-29 10:21:42 Info main.TimerUpdate goroutine数量 10041
+2017-12-29 10:22:15 Info github.com/vvotm/go-followfix/app.(*AppConf).Load 使用配置文件: D:\workspaces\goproj\src\github.com\vvotm\go-followfix\conf\app.dev.toml
+2017-12-29 10:22:15 Info github.com/vvotm/go-followfix/app.(*DbMgr).InitializeDbList 初始化数据连接: log
+2017-12-29 10:22:15 Info github.com/vvotm/go-followfix/app.(*DbMgr).InitializeDbList 初始化数据连接: users_data
+2017-12-29 10:22:15 Info github.com/vvotm/go-followfix/app.(*DbMgr).InitializeDbList 初始化数据连接: contents
+2017-12-29 10:22:15 Info github.com/vvotm/go-followfix/app.(*App).Run 默认处理所有数据
+2017-12-29 10:22:15 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable select uid, anchor from user_follow_4 where  status = 1 and isFriends = 0 and isAnchor = 1
+2017-12-29 10:22:15 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable select uid, anchor from user_follow_0 where  status = 1 and isFriends = 0 and isAnchor = 1
+2017-12-29 10:22:15 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable select uid, anchor from user_follow_1 where  status = 1 and isFriends = 0 and isAnchor = 1
+2017-12-29 10:22:15 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable select uid, anchor from user_follow_2 where  status = 1 and isFriends = 0 and isAnchor = 1
+2017-12-29 10:22:15 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable select uid, anchor from user_follow_3 where  status = 1 and isFriends = 0 and isAnchor = 1
+2017-12-29 10:22:15 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable select uid, anchor from user_follow_7 where  status = 1 and isFriends = 0 and isAnchor = 1
+2017-12-29 10:22:15 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable select uid, anchor from user_follow_9 where  status = 1 and isFriends = 0 and isAnchor = 1
+2017-12-29 10:22:15 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable select uid, anchor from user_follow_8 where  status = 1 and isFriends = 0 and isAnchor = 1
+2017-12-29 10:22:15 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable select uid, anchor from user_follow_5 where  status = 1 and isFriends = 0 and isAnchor = 1
+2017-12-29 10:22:15 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable select uid, anchor from user_follow_6 where  status = 1 and isFriends = 0 and isAnchor = 1
+2017-12-29 10:22:16 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable 表 [user_follow_3] 共[32124] 个UID 
+
+2017-12-29 10:22:16 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 1000
+2017-12-29 10:22:16 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable 表 [user_follow_7] 共[32449] 个UID 
+
+2017-12-29 10:22:16 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 1000
+2017-12-29 10:22:16 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable 表 [user_follow_5] 共[32354] 个UID 
+
+2017-12-29 10:22:16 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 1000
+2017-12-29 10:22:16 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable 表 [user_follow_1] 共[32366] 个UID 
+
+2017-12-29 10:22:16 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 1000
+2017-12-29 10:22:16 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable 表 [user_follow_8] 共[32396] 个UID 
+
+2017-12-29 10:22:16 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 1000
+2017-12-29 10:22:16 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable 表 [user_follow_6] 共[32289] 个UID 
+
+2017-12-29 10:22:16 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 1000
+2017-12-29 10:22:16 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable 表 [user_follow_0] 共[32422] 个UID 
+
+2017-12-29 10:22:16 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 1000
+2017-12-29 10:22:16 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable 表 [user_follow_9] 共[32471] 个UID 
+
+2017-12-29 10:22:16 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 1000
+2017-12-29 10:22:16 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable 表 [user_follow_2] 共[32637] 个UID 
+
+2017-12-29 10:22:16 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 1000
+2017-12-29 10:22:21 Info github.com/vvotm/go-followfix/app.(*FollowService).processSplitTable 表 [user_follow_4] 共[32260] 个UID 
+
+2017-12-29 10:22:21 Info github.com/vvotm/go-followfix/app.(*FollowService).appendTraficChan max goroutine numbers: 1000
+2017-12-29 10:22:45 Info main.TimerUpdate goroutine数量 11041
+2017-12-29 10:23:15 Info main.TimerUpdate goroutine数量 11057
+2017-12-29 10:23:45 Info main.TimerUpdate goroutine数量 11041
+2017-12-29 10:24:15 Info main.TimerUpdate goroutine数量 11041
+2017-12-29 10:24:45 Info main.TimerUpdate goroutine数量 11041
+2017-12-29 10:25:15 Info main.TimerUpdate goroutine数量 11041
+2017-12-29 10:25:45 Info main.TimerUpdate goroutine数量 11041
+2017-12-29 10:26:15 Info main.TimerUpdate goroutine数量 11041

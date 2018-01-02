@@ -92,7 +92,7 @@ func (f *FollowService) ProcessLoginUID()  {
 	}
 
 	var loopNum int = 30000
-	for minId := 1; minId < 21828590 ; minId += loopNum { // 每次处理1w条数据
+	for minId := 480001; minId < 21828590 ; minId += loopNum { // 每次处理1w条数据
 		var uniqueUIDSet map[int]int = make(map[int]int)
 		loginSql := fmt.Sprintf("select uid from login_log_1712 where id >= %d and id < %d group by uid",
 			minId, minId + loopNum)
@@ -197,8 +197,13 @@ func (f *FollowService) deleteDirtyData(tableName string)  {
 }
 
 func (followService *FollowService) Consumer() {
+
+	/* for peerUID := range followService.Traffic {
+		followService.WriteDbRedis(peerUID)
+	} */
+
 	waitGroup := &sync.WaitGroup{}
-	waitGroup.Add(PROCESS_UID_VAVEL)
+	waitGroup.Add(100)
 	for i := 0; i < PROCESS_UID_VAVEL; i++ {
 		go func() {
 			//lock := &sync.RWMutex{}
@@ -221,11 +226,13 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID) {
 	var fansListKey string = fmt.Sprintf("%s%d", FRIEND_SYSTEM_USER_FANS, uId)
 	var friendsListKey string = fmt.Sprintf("%s%d", FRIEND_SYSTEM_USER_FRIENDS, uId)
 
+	var oldFollowList string = fmt.Sprintf(USER_FOLLOW_LIST, uId)
 	// Fetch UID's Follow List And Storage To Social Redis
 	//fmt.Printf("UID[%d] 关注数量: %d 关注列表: %v \n", uId, len(peerUID.FollowCntSet), peerUID.FollowCntSet)
 	/* if len(peerUID.FollowCntSet) > 0 {
 		WriteLog("d:/rediskey.log", followListKey)
 	} */
+	nowTime := float64(time.Now().Unix())
 	for _, followUID := range peerUID.FollowCntSet {
 		//WriteLog("/tmp/uid_follow.log", fmt.Sprintf("%v", iFollowUID))
 		followUIDFansCnt := getUIDFansCnt(followUID)
@@ -234,6 +241,15 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID) {
 			Member: followUID,
 		}
 		err := redisSocial.ZAdd(followListKey, item).Err()
+		if err != nil {
+			log.Error(err)
+		}
+		followItem := redis.Z{
+			Score: nowTime,
+			Member: followUID,
+		}
+		// 老的关注集合处理
+		err = redisSocial.ZAdd(oldFollowList, followItem).Err()
 		if err != nil {
 			log.Error(err)
 		}
@@ -249,6 +265,17 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID) {
 			Member: fansUID,
 		}
 		err := redisSocial.ZAdd(fansListKey, item).Err()
+		if err != nil {
+			log.Error(err)
+		}
+
+		// 当前用户添加到关注对象的粉丝集合中
+		oldFansListKey := fmt.Sprintf(USER_FANS_LIST, fansUID)
+		fansItem := redis.Z{
+			Score: nowTime,
+			Member: uId,
+		}
+		err = redisSocial.ZAdd(oldFansListKey, fansItem).Err()
 		if err != nil {
 			log.Error(err)
 		}
