@@ -2,7 +2,7 @@ name = "follow_data_fix"
 version = "1.0"
 hotfix = true
 # month 半个月开播的主播, login 12月用户登录用户 self 删除自己关注自己用户
-hotfixType = ""
+hotfixType = "uid"
 hotfixUIDList = "15,250"
 [dbConf]
 [dbConf.users_data]

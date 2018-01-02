@@ -5,6 +5,7 @@ import (
 	"runtime"
 	"time"
 	log "github.com/cihub/seelog"
+	"fmt"
 )
 
 func main()  {
@@ -12,9 +13,10 @@ func main()  {
 	runtime.GOMAXPROCS(numCpu)
 	prof := time.Now()
 	appInst := app.NewApp()
-	go TimerUpdate()
+	log.Info("------------------------------------------")
+	// go TimerUpdate()
 	appInst.Run()
-	log.Infof("总共花费 【%f.2】秒！", time.Since(prof).Seconds())
+	fmt.Println(fmt.Sprintf("总共花费 【%f.2】秒！", time.Since(prof).Seconds()))
 
 
 }

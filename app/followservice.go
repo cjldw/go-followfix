@@ -96,6 +96,7 @@ func (f *FollowService) ProcessLoginUID()  {
 		var uniqueUIDSet map[int]int = make(map[int]int)
 		loginSql := fmt.Sprintf("select uid from login_log_1712 where id >= %d and id < %d group by uid",
 			minId, minId + loopNum)
+		log.Infof("处理用户登录: %d", len(uniqueUIDSet))
 		rows, err := dbLog.Query(loginSql)
 		if err != nil {
 			log.Infof("查询数据失败: %s 错误: %v", loginSql, err)
@@ -208,6 +209,7 @@ func (followService *FollowService) Consumer() {
 		go func() {
 			//lock := &sync.RWMutex{}
 			for peerUID := range followService.Traffic {
+				fmt.Println(fmt.Sprintf("--------写Redis:%v------------", peerUID))
 				followService.WriteDbRedis(peerUID)
 			}
 			waitGroup.Done()
@@ -250,6 +252,7 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID) {
 		}
 		// 老的关注集合处理
 		err = redisSocial.ZAdd(oldFollowList, followItem).Err()
+		fmt.Printf("老关注: %s 数据: %v\n",oldFollowList, followItem)
 		if err != nil {
 			log.Error(err)
 		}
@@ -276,6 +279,7 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID) {
 			Member: uId,
 		}
 		err = redisSocial.ZAdd(oldFansListKey, fansItem).Err()
+		fmt.Printf("老粉丝: %s 数据: %v 状态: %v\n", oldFansListKey, fansItem, err)
 		if err != nil {
 			log.Error(err)
 		}

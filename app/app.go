@@ -32,21 +32,26 @@ func NewApp() *App  {
 		app = &App{isInitialize:true}
 		app.confmgr = (func() *AppConf{
 			appconf, err := NewAppConf().Load(APP_CONFIG_PATH, false)
+			log.Info(err)
 			CheckErr(err)
 			return appconf
 		})()
+		log.Info("---1---")
 		app.dbmgr = (func() *DbMgr{
+			log.Info("2")
 			dbmgr := NewDbMgr()
 			dbmgr.InitializeDbList(app.confmgr.DbConf)
 			return dbmgr
 
 		})()
 		app.redismgr = (func() *RedisMgr{
+			log.Info("3")
 			redismgr := NewRedisMgr()
 			redismgr.InitializeRedisList(app.confmgr.RedisConf)
 			return redismgr
 		})()
 	})
+	log.Info("xxxxxxxxxxxxxxxxx")
 	return app
 }
 
