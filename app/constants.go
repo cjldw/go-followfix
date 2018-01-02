@@ -41,4 +41,4 @@ const USER_FANS_LIST  =  "user:follow:%d"
 const TMP_UID_FANS_NUM  = "tmp:uid:fans:num"
 
 // PROCESS_UID_VAVEL goroutine 阀门
-const PROCESS_UID_VAVEL  =  1000
+const PROCESS_UID_VAVEL  =  50
