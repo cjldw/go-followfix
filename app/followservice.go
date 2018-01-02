@@ -252,7 +252,7 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID) {
 		}
 		// 老的关注集合处理
 		err = redisSocial.ZAdd(oldFollowList, followItem).Err()
-		fmt.Printf("老关注: %s 数据: %v\n",oldFollowList, followItem)
+		fmt.Printf("老关注: %s 数据: %v 状态: %v\n",oldFollowList, followItem, err)
 		if err != nil {
 			log.Error(err)
 		}
