@@ -1,5 +1,6 @@
 .idea
 vendor
 *.exe
+*.log
 conf/*.toml
 !conf/app.dev.toml
