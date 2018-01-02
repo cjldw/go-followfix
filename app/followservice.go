@@ -246,6 +246,7 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID) {
 			Score:  float64(followUIDFansCnt),
 			Member: followUID,
 		}
+		fmt.Printf("新关注: %s 状态: %v\n",followListKey, item)
 		err := redisSocial.ZAdd(followListKey, item).Err()
 		if err != nil {
 			log.Error(err)
@@ -276,6 +277,7 @@ func (followService *FollowService) WriteDbRedis(peerUID PeerUID) {
 			log.Error(err)
 		}
 
+		fmt.Printf("新粉丝: %s 状态: %v\n",fansListKey, fansUID)
 		// 当前用户添加到关注对象的粉丝集合中
 		oldFansListKey := fmt.Sprintf(USER_FANS_LIST, fansUID)
 		fansItem := redis.Z{
@@ -352,7 +354,7 @@ func ClearUserfollow(uid int)  {
 	friendKey := fmt.Sprintf("%s%d", FRIEND_SYSTEM_USER_FRIENDS, uid)
 
 	err = redisSocial.Del(followKey, fansKey, friendKey).Err()
-	fmt.Printf("删除数据%s,%s, %s 状态:%v", followKey, fansKey, friendKey, err)
+	fmt.Printf("删除数据%s,%s, %s 状态:%v\n", followKey, fansKey, friendKey, err)
 
 	redisOld, err := GetApp().redismgr.GetRedisByName(REDIS_OLD)
 	CheckErr(err)
@@ -360,7 +362,7 @@ func ClearUserfollow(uid int)  {
 	oldFansKey := fmt.Sprintf(USER_FANS_LIST, uid)
 
 	err = redisOld.Del(oldFollowKey, oldFansKey).Err()
-	fmt.Printf("删除老关注数据%s,%s,状态:%v", oldFansKey, oldFollowKey, err)
+	fmt.Printf("删除老关注数据%s,%s,状态:%v\n", oldFansKey, oldFollowKey, err)
 	redisSocial.HSet(TMP_UID_CLEAR, clearKey, 1)
 }
 
